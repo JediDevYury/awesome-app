@@ -10,7 +10,7 @@
 		"web": "expo start --web",
 		"test": "jest --watchAll",
 		"lint": "eslint . --ext .ts,.tsx --config .eslintrc.js",
-		"prepare": "husky"
+		"format": "prettier --config .prettierrc.js --check --write ."
 	},
 	"jest": {
 		"preset": "jest-expo"
@@ -64,12 +64,14 @@
 		"jest-expo": "~51.0.3",
 		"lint-staged": "^15.2.7",
 		"prettier": "^3.3.3",
+		"prettier-plugin-sort-imports": "^1.8.6",
 		"react-test-renderer": "18.2.0",
 		"typescript": "~5.3.3"
 	},
 	"lint-staged": {
 		"*.{ts,tsx}": [
-			"eslint --cache --fix --config .eslintrc.js"
+			"eslint --cache --fix --config .eslintrc.js",
+			"prettier --config .prettierrc.js --write ."
 		]
 	},
 	"private": true

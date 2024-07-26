@@ -1,6 +1,6 @@
-import { Text, View } from 'react-native';
-
 import { useAuth } from '@/providers';
+
+import { Text, View } from 'react-native';
 
 export default function Main() {
 	const { signOut } = useAuth();

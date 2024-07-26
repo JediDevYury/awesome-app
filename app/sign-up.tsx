@@ -1,9 +1,9 @@
+import { CustomLink } from '@/components';
+import { auth } from '@/services/firebase';
+import { router } from 'expo-router';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { CustomLink } from '@/components';
-import { router } from 'expo-router';
-import { auth } from '@/services/firebase';
 
 export default function SignUp() {
 	const [email, setEmail] = useState('');

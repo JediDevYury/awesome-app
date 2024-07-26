@@ -1,11 +1,11 @@
-import { useContext, createContext, useState, useEffect, type PropsWithChildren } from 'react';
+import { auth as FIREBASE_AUTH } from '@/services/firebase';
 import {
 	User,
 	signInWithEmailAndPassword,
 	signOut as firebaseSignOut,
 	onAuthStateChanged,
 } from 'firebase/auth';
-import { auth as FIREBASE_AUTH } from '@/services/firebase';
+import { useContext, createContext, useState, useEffect, type PropsWithChildren } from 'react';
 
 const AuthContext = createContext<{
 	signIn: (email: string, password: string) => Promise<void>;

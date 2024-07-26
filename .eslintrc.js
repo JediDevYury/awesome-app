@@ -3,6 +3,7 @@ module.exports = {
 	plugins: ['prettier', 'react', 'react-native'],
 	extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
 	rules: {
+		'sort-imports': 'off',
 		'react-native/no-unused-styles': 2,
 		'react-native/split-platform-components': 2,
 		'react-native/no-inline-styles': 2,

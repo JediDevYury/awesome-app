@@ -1,6 +1,6 @@
 import { Link } from 'expo-router';
-import { Text } from 'react-native';
 import { LinkProps } from 'expo-router/build/link/Link';
+import { Text } from 'react-native';
 
 export function CustomLink({ text, ...props }: LinkProps & { text: string }) {
 	return (
