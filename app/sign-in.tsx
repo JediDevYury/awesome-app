@@ -1,8 +1,8 @@
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { Button, CustomLink, Input } from '@/components';
 import { useAuth } from '@/providers';
+import { Button, CustomLink, Input } from '@/shared';
 import React, { useState } from 'react';
 
 export default function SignIn() {

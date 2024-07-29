@@ -1,4 +1,4 @@
-import { Colors } from '@/shared';
+import { Colors, Radius } from '../tokens';
 import {
   ActivityIndicator,
   Animated,
@@ -6,6 +6,8 @@ import {
   Pressable,
   PressableProps,
   Text,
+  StyleSheet,
+  Platform,
 } from 'react-native';
 
 export function Button({
@@ -40,12 +42,44 @@ export function Button({
   return (
     <Pressable {...props} onPressIn={fadeIn} onPressOut={fadeOut}>
       <Animated.View
-        className="justify-center items-center h-12 rounded-md px-4"
-        style={{ backgroundColor: color }}
+        style={[
+          styles.container,
+          {
+            backgroundColor: color,
+          },
+        ]}
       >
-        {!isLoading && <Text className="text-white text-lg font-firaSemibold">{text}</Text>}
+        {!isLoading && (
+          <Text
+            className="text-white font-firaSemibold text-[16px]"
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            style={styles.text}
+          >
+            {text}
+          </Text>
+        )}
         {isLoading && <ActivityIndicator size="large" color={Colors.white} />}
       </Animated.View>
     </Pressable>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 10,
+    height: 36,
+    borderRadius: Radius.r8,
+  },
+  text: {
+    textAlignVertical: 'center',
+    textAlign: 'center',
+    marginBottom: Platform.select({
+      ios: 0,
+      android: 2,
+    }),
+  },
+});

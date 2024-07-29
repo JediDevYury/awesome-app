@@ -1,5 +1,5 @@
+import { Colors } from '../tokens';
 import { EyeClosedIcon, EyeOpenedIcon } from '@/assets/icons';
-import { Colors } from '@/shared';
 import { useState } from 'react';
 import { Pressable, TextInput, TextInputProps, View } from 'react-native';
 

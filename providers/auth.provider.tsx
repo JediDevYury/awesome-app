@@ -1,4 +1,4 @@
-import { auth as FIREBASE_AUTH } from '@/services/firebase';
+import { auth as FIREBASE_AUTH } from '@/services/firebase.service';
 import {
   User,
   signInWithEmailAndPassword,

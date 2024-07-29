@@ -1,5 +1,5 @@
-import { Button, Input, CustomLink } from '@/components';
-import { auth } from '@/services/firebase';
+import { auth } from '@/services/firebase.service';
+import { Button, Input, CustomLink } from '@/shared';
 import { router } from 'expo-router';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
