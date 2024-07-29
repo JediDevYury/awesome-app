@@ -5,7 +5,7 @@ export const Colors = {
   white: 'rgb(255, 255, 255)',
   black: 'rgb(0, 0, 0)',
   disabled: 'rgb(219, 219, 219)',
-  neutral200: 'rgb(178, 178, 178)',
+  neutral: 'rgb(178, 178, 178)',
 };
 
 export const Fonts = {
@@ -15,22 +15,20 @@ export const Fonts = {
 };
 
 export const FontSizes = {
-  f12: 12,
-  f14: 14,
-  f16: 16,
-  f18: 18,
+  small: 12,
+  medium: 14,
+  large: 16,
 };
 
 export const Radius = {
-  r8: 8,
-  r10: 10,
-  r15: 15,
-  r20: 20,
-  r30: 30,
+  small: 6,
+  medium: 8,
+  large: 12,
+  extraLarge: 16,
 };
 
 export const Gaps = {
-  g8: 8,
-  g16: 16,
-  g24: 24,
+  small: 8,
+  medium: 16,
+  large: 24,
 };

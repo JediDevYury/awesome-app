@@ -43,7 +43,7 @@ export function ErrorNotification({ error }: ErrorNotificationProps) {
 
   return (
     <Animated.View style={[styles.error, animatedStyle]} onLayout={onEnter}>
-      <Text className="font-firaReg text-[16px] text-white text-center">{error}</Text>
+      <Text className="font-firaReg text-base text-white text-center">{error}</Text>
     </Animated.View>
   );
 }

@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     paddingHorizontal: 10,
     height: 36,
-    borderRadius: Radius.r8,
+    borderRadius: Radius.medium,
   },
   text: {
     textAlignVertical: 'center',

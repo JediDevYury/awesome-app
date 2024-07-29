@@ -10,7 +10,7 @@ export function Input({ isPassword, style, ...props }: TextInputProps & { isPass
     <View style={style} className="relative w-full p-2 my-2 border border-gray-300 rounded-md">
       <TextInput
         secureTextEntry={isPassword && !isPasswordVisible}
-        placeholderTextColor={Colors.neutral200}
+        placeholderTextColor={Colors.neutral}
         {...props}
       />
       {isPassword && (

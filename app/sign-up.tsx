@@ -1,5 +1,5 @@
 import { auth } from '@/services/firebase.service';
-import { Button, Input, CustomLink } from '@/shared';
+import { Button, Input, CustomLink, Title } from '@/shared';
 import { router } from 'expo-router';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
@@ -23,7 +23,7 @@ export default function SignUp() {
 
   return (
     <View className="flex-1 justify-center items-center p-4">
-      <Text className="font-firaSemibold text-2xl mb-4">Registration Page</Text>
+      <Title text={'Registration Page'} />
       <Input
         placeholder="Email"
         value={email}

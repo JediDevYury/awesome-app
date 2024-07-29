@@ -95,15 +95,15 @@ export function ImageUploader({ onUpload, onError }: ImageUploaderProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    gap: Gaps.g8,
+    gap: Gaps.small,
     backgroundColor: Colors.primary,
-    borderRadius: Radius.r10,
+    borderRadius: Radius.large,
     paddingHorizontal: 20,
     paddingVertical: 17,
     alignItems: 'center',
   },
   text: {
-    fontSize: FontSizes.f14,
+    fontSize: FontSizes.medium,
     fontFamily: Fonts.regular,
     color: Colors.white,
   },

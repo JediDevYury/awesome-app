@@ -13,7 +13,7 @@ export default function Card({ children, style = {} }: CardProps) {
 const styles = StyleSheet.create({
   card: {
     padding: 15,
-    borderRadius: Radius.r15,
+    borderRadius: Radius.extraLarge,
     backgroundColor: Colors.white,
     elevation: 8,
     shadowColor: Colors.black,

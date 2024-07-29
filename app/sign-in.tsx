@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { useAuth } from '@/providers';
-import { Button, CustomLink, Input } from '@/shared';
+import { Button, CustomLink, Input, Title } from '@/shared';
 import React, { useState } from 'react';
 
 export default function SignIn() {
@@ -23,7 +23,7 @@ export default function SignIn() {
 
   return (
     <View className="flex-1 justify-center items-center px-4">
-      <Text className="font-firaSemibold text-2xl mb-4">Welcome to Awesome App!</Text>
+      <Title text={'Welcome to Awesome App!'} />
       <Input
         placeholder="Email"
         value={email}

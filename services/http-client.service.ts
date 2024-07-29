@@ -29,7 +29,7 @@ export class HttpClientService {
         ? JSON.stringify(body)
         : body;
 
-    const response = await fetch(this.baseURL + url, {
+    const response = await fetch(`${this.baseURL}${url}`, {
       method,
       headers: {
         ...this.defaultHeaders,
@@ -56,7 +56,7 @@ export class HttpClientService {
   }
 
   post<PostResponse>(url: string, body: RequestInit['body'], headers = this.defaultHeaders) {
-    return this.request<PostResponse>(this.baseURL + url, {
+    return this.request<PostResponse>(`${this.baseURL}${url}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ export class HttpClientService {
   }
 
   put<PutResponse>(url: string, body: RequestInit['body'], headers = {}) {
-    return this.request<PutResponse>(this.baseURL + url, {
+    return this.request<PutResponse>(`${this.baseURL}${url}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -78,14 +78,14 @@ export class HttpClientService {
   }
 
   delete<DeleteResponse>(url: string, headers = {}) {
-    return this.request<DeleteResponse>(this.baseURL + url, {
+    return this.request<DeleteResponse>(`${this.baseURL}${url}`, {
       method: 'DELETE',
       headers,
     });
   }
 
   uploadFile<UploadResponse>(url: string, body: Options['body'], headers = {}) {
-    return this.request<UploadResponse>(this.baseURL + url, {
+    return this.request<UploadResponse>(`${this.baseURL}${url}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'multipart/form-data',
