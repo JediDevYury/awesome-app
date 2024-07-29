@@ -1,4 +1,4 @@
-import { Colors, Radius } from '../tokens';
+import { Colors, Radius } from './tokens';
 import { PropsWithChildren } from 'react';
 import { View, ViewStyle, StyleSheet } from 'react-native';
 

@@ -1,4 +1,4 @@
-import { Colors, Radius } from '../tokens';
+import { Colors, Radius } from './tokens';
 import {
   ActivityIndicator,
   Animated,

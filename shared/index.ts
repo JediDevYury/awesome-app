@@ -1,2 +1,6 @@
 export * from './tokens';
-export * from './components';
+export * from './Button';
+export * from './Card';
+export * from './CustomLink';
+export * from './Input';
+export * from './ErrorNotifications';

@@ -1,4 +1,4 @@
-import { Colors, Fonts, FontSizes, Gaps, Radius } from '../tokens';
+import { Colors, Fonts, FontSizes, Gaps, Radius } from './tokens';
 import { UploadIcon } from '@/assets/icons';
 import { httpClient } from '@/services';
 import { UploadResponse } from '@/types';

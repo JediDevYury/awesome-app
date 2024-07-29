@@ -1,4 +1,4 @@
-import { Colors } from '../tokens';
+import { Colors } from './tokens';
 import { useEffect, useState } from 'react';
 import { Text, StyleSheet, Dimensions } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';

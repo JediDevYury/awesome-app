@@ -1,4 +1,4 @@
-import { Colors } from '../tokens';
+import { Colors } from './tokens';
 import { EyeClosedIcon, EyeOpenedIcon } from '@/assets/icons';
 import { useState } from 'react';
 import { Pressable, TextInput, TextInputProps, View } from 'react-native';
