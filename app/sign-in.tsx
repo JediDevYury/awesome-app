@@ -1,9 +1,9 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { Button, Text, TextInput, View } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { CustomLink } from '@/components/CustomLink';
 import { useAuth } from '@/providers';
+import { Button, CustomLink, Input, Title } from '@/shared';
+import React, { useState } from 'react';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -23,24 +23,17 @@ export default function SignIn() {
 
   return (
     <View className="flex-1 justify-center items-center px-4">
-      <Text className="font-firaSemibold text-2xl mb-4">Welcome to Awesome App!</Text>
-      <TextInput
-        className="w-full p-2 my-2 border border-gray-300 rounded-md"
+      <Title text={'Welcome to Awesome App!'} />
+      <Input
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TextInput
-        className="w-full p-2 my-2 border border-gray-300 rounded-md"
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <Button title="Sign In" onPress={handleSignIn} />
-      <Text>
+      <Input isPassword placeholder="Password" value={password} onChangeText={setPassword} />
+      <Button text="Sign In" onPress={handleSignIn} />
+      <Text className="mt-4">
         Don't have an account? <CustomLink href={'/sign-up'} text={'Sign Up'} />
       </Text>
     </View>

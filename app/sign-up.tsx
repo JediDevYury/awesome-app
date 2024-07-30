@@ -1,9 +1,9 @@
-import { CustomLink } from '@/components';
-import { auth } from '@/services/firebase';
+import { auth } from '@/services/firebase.service';
+import { Button, Input, CustomLink, Title } from '@/shared';
 import { router } from 'expo-router';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
+import { View, Text } from 'react-native';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
@@ -23,24 +23,17 @@ export default function SignUp() {
 
   return (
     <View className="flex-1 justify-center items-center p-4">
-      <Text className="font-bold text-[--font-size-dynamic] mb-4">Registration Page</Text>
-      <TextInput
-        className="w-full p-2 my-2 border border-gray-300 rounded-md"
+      <Title text={'Registration Page'} />
+      <Input
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TextInput
-        className="w-full p-2 my-2 border border-gray-300 rounded-md"
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <Button title="Sign Up" onPress={handleSignUp} />
-      <Text>
+      <Input isPassword placeholder="Password" value={password} onChangeText={setPassword} />
+      <Button text="Sign Up" onPress={handleSignUp} />
+      <Text className="mt-4">
         Already have an account? <CustomLink href={'/sign-in'} text={'Sign In'} />
       </Text>
     </View>
