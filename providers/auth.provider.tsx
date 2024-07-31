@@ -9,7 +9,7 @@ import { useContext, createContext, useState, useEffect, type PropsWithChildren 
 
 const AuthContext = createContext<{
   signIn: (email: string, password: string) => Promise<void>;
-  signOut: () => void;
+  signOut: () => Promise<void>;
   user: User | null;
   isLoading: boolean;
 }>({
@@ -46,15 +46,17 @@ export function AuthProvider({ children }: PropsWithChildren) {
   };
 
   const signOut = async () => {
+    setIsLoading(true);
+
     try {
       await firebaseSignOut(FIREBASE_AUTH);
       setUser(null);
       setIsLoading(false);
     } catch (error) {
       console.error('Failed to sign out', error);
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(true);
   };
 
   useEffect(() => {

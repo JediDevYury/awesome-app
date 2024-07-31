@@ -5,6 +5,8 @@ import { useEffect } from 'react';
 
 import '../global.css';
 import { AuthProvider } from '@/providers/auth.provider';
+import { ErrorNotification } from '@/shared';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -36,14 +38,21 @@ export function InitialLayout() {
     return null;
   }
 
-  return <Slot />;
+  return (
+    <>
+      <ErrorNotification error={error?.message} />
+      <Slot />
+    </>
+  );
 }
 
 function RootLayoutNav() {
   return (
-    <AuthProvider>
-      <InitialLayout />
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <InitialLayout />
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }
 

@@ -12,7 +12,7 @@ export const Title = ({
   ...props
 }: PropsWithChildren<TextProps & TitleProps>) => {
   return (
-    <Text className={className || 'font-firaSemibold text-2xl mb-4'} {...props}>
+    <Text className={className || 'font-firaSemibold text-2xl'} {...props}>
       {text || children}
     </Text>
   );

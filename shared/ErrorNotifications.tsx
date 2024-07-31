@@ -1,4 +1,5 @@
 import { Colors } from './tokens';
+import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { Text, StyleSheet, Dimensions } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
@@ -43,7 +44,8 @@ export function ErrorNotification({ error }: ErrorNotificationProps) {
 
   return (
     <Animated.View style={[styles.error, animatedStyle]} onLayout={onEnter}>
-      <Text className="font-firaReg text-base text-white text-center">{error}</Text>
+      <Ionicons name="alert-circle-outline" size={24} color="white" />
+      <Text className="font-firaBold text-lg text-white text-center">{error}</Text>
     </Animated.View>
   );
 }
@@ -52,6 +54,9 @@ const styles = StyleSheet.create({
   error: {
     position: 'absolute',
     width: Dimensions.get('screen').width,
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'center',
     backgroundColor: Colors.primary,
     padding: 15,
     top: 50,

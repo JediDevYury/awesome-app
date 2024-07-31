@@ -1,22 +1,54 @@
-import { Redirect, Stack } from 'expo-router';
-import { Text } from 'react-native';
+import { Redirect, Stack, useRouter } from 'expo-router';
 
 import { useAuth } from '@/providers';
+import { Colors } from '@/shared';
+import { Loader } from '@/shared/Loader';
+import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import { TouchableOpacity } from 'react-native';
 
-export default function AppLayout() {
-  const { user, isLoading } = useAuth();
+export default function MainLayout() {
+  const { user, signOut, isLoading } = useAuth();
 
-  if (isLoading) {
-    return <Text>Loading...</Text>;
-  }
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await signOut();
+    router.navigate('/sign-in');
+  };
+
+  if (isLoading) return <Loader loading={isLoading} />;
 
   if (!user) {
     return <Redirect href="/sign-in" />;
   }
 
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
+    <Stack
+      screenOptions={{
+        headerTitle: 'Transactions',
+        headerTitleStyle: {
+          color: 'white',
+          fontFamily: 'FiraSans-SemiBold',
+          fontSize: 18,
+        },
+        headerStyle: {
+          backgroundColor: Colors.primary,
+        },
+        headerTitleAlign: 'center',
+        headerRight: () => (
+          <TouchableOpacity onPress={handleLogout}>
+            <Ionicons name="log-out-outline" size={24} color="white" />
+          </TouchableOpacity>
+        ),
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => {}}>
+            <Ionicons name="create" size={24} color="white" />
+          </TouchableOpacity>
+        ),
+      }}
+    >
+      <Stack.Screen name="index" />
     </Stack>
   );
 }

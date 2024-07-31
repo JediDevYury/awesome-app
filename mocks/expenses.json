@@ -1,0 +1,17 @@
+{
+  "expenses": [
+    { "id": 1, "category_id": 1, "amount": 100.50, "date": 1722447780559, "description": "Weekly groceries" },
+    { "id": 2, "category_id": 1, "amount": 75.25, "date": 1709900400, "description": "More groceries" },
+    { "id": 3, "category_id": 2, "amount": 1200.00, "date": 1707740400, "description": "Monthly rent" },
+    { "id": 4, "category_id": 1, "amount": 45.99, "date": 1710082800, "description": "Snacks and drinks" },
+    { "id": 5, "category_id": 4, "amount": 60.00, "date": 1707154800, "description": "Breakfast supplies" },
+    { "id": 6, "category_id": 5, "amount": 110.75, "date": 1707241200, "description": "Household items" },
+    { "id": 7, "category_id": 1, "amount": 50.25, "date": 1722447780559, "description": "Utilities bill" },
+    { "id": 8, "category_id": 2, "amount": 200.50, "date": 1707414000, "description": "Electronics" },
+    { "id": 9, "category_id": 3, "amount": 15.99, "date": 1707500400, "description": "Dining out" },
+    { "id": 10, "category_id": 6, "amount": 90.00, "date": 1712447780559, "description": "Christmas Gifts" },
+    { "id": 11, "category_id": 7, "amount": 120.75, "date": 1704649200, "description": "New Year Party Supplies" },
+    { "id": 12, "category_id": 8, "amount": 85.50, "date": 1701970800, "description": "Thanksgiving Groceries" },
+    { "id": 13, "category_id": 2, "amount": 900.00, "date": 1702057200, "description": "Rent November" }
+  ]
+}
