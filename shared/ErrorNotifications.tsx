@@ -1,8 +1,8 @@
-import { Colors } from './tokens';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { Text, StyleSheet, Dimensions } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { Colors } from 'react-native-ui-lib';
 
 export interface ErrorNotificationProps {
   error?: string;
@@ -45,10 +45,12 @@ export function ErrorNotification({ error }: ErrorNotificationProps) {
   return (
     <Animated.View style={[styles.error, animatedStyle]} onLayout={onEnter}>
       <Ionicons name="alert-circle-outline" size={24} color="white" />
-      <Text className="font-firaBold text-lg text-white text-center">{error}</Text>
+      <Text>{error}</Text>
     </Animated.View>
   );
 }
+
+// Text className="font-firaBold text-lg text-white text-center"
 
 const styles = StyleSheet.create({
   error: {

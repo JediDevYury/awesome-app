@@ -1,11 +1,11 @@
 import { Redirect, Stack, useRouter } from 'expo-router';
 
 import { useAuth } from '@/providers';
-import { Colors } from '@/shared';
 import { Loader } from '@/shared/Loader';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
+import { Colors } from 'react-native-ui-lib';
 
 export default function MainLayout() {
   const { user, signOut, isLoading } = useAuth();

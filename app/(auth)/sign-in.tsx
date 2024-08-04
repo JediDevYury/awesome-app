@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
+import { Typography, View } from 'react-native-ui-lib';
 
 import { useAuth } from '@/providers';
 import { Button, CustomLink, Input, Title } from '@/shared';
@@ -22,8 +23,8 @@ export default function SignIn() {
   };
 
   return (
-    <View className="flex-1 justify-center items-center px-4">
-      <Title text={'Welcome to Awesome App!'} />
+    <View flex paddingH-4 centerV centerH gap-10>
+      <Title text="Welcome to Awesome App!" />
       <Input
         placeholder="Email"
         value={email}
@@ -33,7 +34,7 @@ export default function SignIn() {
       />
       <Input isPassword placeholder="Password" value={password} onChangeText={setPassword} />
       <Button text="Sign In" onPress={handleSignIn} />
-      <Text className="mt-4">
+      <Text style={Typography.regular}>
         Don't have an account? <CustomLink href={'/sign-up'} text={'Sign Up'} />
       </Text>
     </View>

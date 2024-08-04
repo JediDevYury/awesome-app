@@ -1,19 +1,26 @@
 import React, { PropsWithChildren } from 'react';
-import { Text, TextProps } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { Text, TextProps, Typography } from 'react-native-ui-lib';
 
 type TitleProps = {
   text: string;
 };
 
 export const Title = ({
-  className,
   text,
   children,
+  style,
   ...props
 }: PropsWithChildren<TextProps & TitleProps>) => {
   return (
-    <Text className={className || 'font-firaSemibold text-2xl'} {...props}>
+    <Text style={[styles.title, style]} {...props}>
       {text || children}
     </Text>
   );
 };
+
+const styles = StyleSheet.create({
+  title: {
+    ...Typography.h3,
+  },
+});

@@ -3,8 +3,8 @@ import categories from '@/mocks/categories.json';
 import { expenses } from '@/mocks/expenses.json';
 import { income } from '@/mocks/income.json';
 import { Category, Transaction } from '@/types';
-import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View, StyleSheet } from 'react-native';
+import { initialWindowMetrics } from 'react-native-safe-area-context';
 
 const transactions = [...income, ...expenses]
   .map(({ category_id, ...transaction }) => {
@@ -16,17 +16,8 @@ const transactions = [...income, ...expenses]
   .sort((a, b) => b.date - a.date) as unknown as Transaction[];
 
 export default function Home() {
-  const insets = useSafeAreaInsets();
-
   return (
-    <View
-      className="flex-1"
-      style={{
-        paddingBottom: insets.bottom,
-        paddingLeft: insets.left,
-        paddingRight: insets.right,
-      }}
-    >
+    <View style={styles.container}>
       <TransactionsList
         transactions={transactions}
         categories={categories as unknown as Category[]}
@@ -34,3 +25,12 @@ export default function Home() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingBottom: initialWindowMetrics?.insets.bottom,
+    paddingLeft: initialWindowMetrics?.insets.left,
+    paddingRight: initialWindowMetrics?.insets.right,
+  },
+});

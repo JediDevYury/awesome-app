@@ -1,15 +1,15 @@
-import { Colors, Radius } from './tokens';
 import { PropsWithChildren } from 'react';
-import { View, ViewStyle, StyleSheet } from 'react-native';
+import { ViewStyle, StyleSheet } from 'react-native';
+import { Colors, BorderRadiuses, View, ViewProps } from 'react-native-ui-lib';
 
-interface CardProps extends PropsWithChildren {
+type CardProps = PropsWithChildren<{
   style?: ViewStyle;
   className?: string;
-}
+}>;
 
-export function Card({ children, className, style = {} }: CardProps) {
+export function Card({ children, style = {}, ...props }: CardProps & ViewProps) {
   return (
-    <View className={className} style={[styles.card, style]}>
+    <View style={[styles.card, style]} {...props}>
       {children}
     </View>
   );
@@ -18,7 +18,7 @@ export function Card({ children, className, style = {} }: CardProps) {
 const styles = StyleSheet.create({
   card: {
     padding: 15,
-    borderRadius: Radius.extraLarge,
+    borderRadius: BorderRadiuses.br20,
     backgroundColor: Colors.white,
     elevation: 8,
     shadowColor: Colors.black,

@@ -1,8 +1,9 @@
 import { Amount } from './Amount';
 import { Card, CategoryColors, CategoryEmojies } from '@/shared';
 import { Category, CategoryType, Transaction } from '@/types';
-import React from 'react';
-import { Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { Platform, StyleSheet } from 'react-native';
+import { Colors, Text, Typography, View } from 'react-native-ui-lib';
 
 type TransactionListItemProps = {
   transaction: Transaction;
@@ -16,27 +17,58 @@ export const TransactionListItem = ({ transaction, category }: TransactionListIt
   const emoji = CategoryEmojies[category?.name ?? 'Default'];
 
   return (
-    <Card className="m-4">
-      <View className="flex flex-row items-center gap-1.5">
-        <View className="w-[40%] gap-1">
-          <Amount iconName={iconName} color={color} amount={transaction.amount} />
+    <Card marginT-10>
+      <View flex row centerH gap-6>
+        <View style={styles.amountContainer}>
+          <Amount color={color} amount={transaction.amount}>
+            <Ionicons
+              color={color}
+              name={iconName}
+              size={18}
+              style={styles.icon}
+              allowFontScaling
+            />
+          </Amount>
           <View
-            className="self-start rounded-[10px] py-1.5 px-2.5"
-            style={{ backgroundColor: categoryColor + 60 }}
+            paddingH-12
+            paddingV-6
+            style={[styles.categoryContainer, { backgroundColor: categoryColor + 60 }]}
           >
-            <Text className="font-firaReg text-xs">
+            <Text style={Typography.small}>
               {emoji} {category.name}
             </Text>
           </View>
         </View>
-        <View className="flex grow-1 shrink-1 gap-1.5">
-          <Text className="font-firaBold text-base">{transaction.description}</Text>
-          <Text className="font-firaReg">Transaction number {transaction.id}</Text>
-          <Text className="font-firaReg text-xs text-gray-600">
-            {new Date(transaction.date).toDateString()}
-          </Text>
+        <View style={styles.transactionContainer}>
+          <Text style={Typography.bold}>{transaction.description}</Text>
+          <Text style={Typography.regular}>Transaction number {transaction.id}</Text>
+          <Text style={styles.transactionDate}>{new Date(transaction.date).toDateString()}</Text>
         </View>
       </View>
     </Card>
   );
 };
+
+const styles = StyleSheet.create({
+  amountContainer: {
+    width: '40%',
+    gap: 6,
+  },
+  categoryContainer: {
+    alignSelf: 'flex-start',
+    borderRadius: 10,
+  },
+  transactionContainer: {
+    flexGrow: 1,
+    flexShrink: 1,
+    gap: 6,
+  },
+  transactionDate: {
+    ...Typography.small,
+    color: Colors.neutral,
+  },
+  icon: {
+    paddingRight: 4,
+    marginTop: Platform.select({ ios: 0, android: 4 }),
+  },
+});

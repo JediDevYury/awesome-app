@@ -1,4 +1,3 @@
-import { Colors, Fonts, FontSizes, Gaps, Radius } from './tokens';
 import { UploadIcon } from '@/assets/icons';
 import { httpClient } from '@/services';
 import { UploadResponse } from '@/types';
@@ -9,6 +8,7 @@ import {
   PermissionStatus,
 } from 'expo-image-picker';
 import { Alert, Pressable, View, Text, StyleSheet } from 'react-native';
+import { Colors, Typography, Spacings, BorderRadiuses } from 'react-native-ui-lib';
 
 interface ImageUploaderProps {
   onUpload: (uri: string) => void;
@@ -95,16 +95,16 @@ export function ImageUploader({ onUpload, onError }: ImageUploaderProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    gap: Gaps.small,
+    gap: Spacings.s8,
     backgroundColor: Colors.primary,
-    borderRadius: Radius.large,
+    borderRadius: BorderRadiuses.br10,
     paddingHorizontal: 20,
     paddingVertical: 17,
     alignItems: 'center',
   },
   text: {
-    fontSize: FontSizes.medium,
-    fontFamily: Fonts.regular,
+    fontSize: Typography.medium.fontSize,
+    fontFamily: Typography.regular.fontFamily,
     color: Colors.white,
   },
 });

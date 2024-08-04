@@ -9,7 +9,11 @@ type TransactionsListProps = {
 
 export function TransactionsList({ transactions, categories }: TransactionsListProps) {
   return (
-    <ScrollView>
+    <ScrollView
+      contentContainerStyle={{
+        paddingHorizontal: 8,
+      }}
+    >
       {transactions.map((transaction) => {
         return (
           <TouchableOpacity key={transaction.id} activeOpacity={0.7}>

@@ -1,14 +1,12 @@
-import { Colors, Radius } from './tokens';
 import {
   ActivityIndicator,
   Animated,
   GestureResponderEvent,
   Pressable,
   PressableProps,
-  Text,
   StyleSheet,
-  Platform,
 } from 'react-native';
+import { Colors, BorderRadiuses, Text, Typography } from 'react-native-ui-lib';
 
 export function Button({
   text,
@@ -50,12 +48,7 @@ export function Button({
         ]}
       >
         {!isLoading && (
-          <Text
-            className="text-white font-firaSemibold text-[16px]"
-            numberOfLines={1}
-            adjustsFontSizeToFit
-            style={styles.text}
-          >
+          <Text style={styles.buttonText} numberOfLines={1} adjustsFontSizeToFit>
             {text}
           </Text>
         )}
@@ -72,14 +65,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     paddingHorizontal: 10,
     height: 36,
-    borderRadius: Radius.medium,
+    borderRadius: BorderRadiuses.br10,
   },
-  text: {
-    textAlignVertical: 'center',
-    textAlign: 'center',
-    marginBottom: Platform.select({
-      ios: 0,
-      android: 2,
-    }),
+  buttonText: {
+    ...Typography.button,
   },
 });

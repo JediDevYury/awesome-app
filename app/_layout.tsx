@@ -3,7 +3,7 @@ import { Slot } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
-import '../global.css';
+import '../configs/rn-ui-lib.config';
 import { AuthProvider } from '@/providers/auth.provider';
 import { ErrorNotification } from '@/shared';
 import { SafeAreaProvider } from 'react-native-safe-area-context';

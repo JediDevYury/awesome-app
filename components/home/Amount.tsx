@@ -1,18 +1,18 @@
 /* eslint-disable react-native/no-raw-text */
-import { Ionicons } from '@expo/vector-icons';
-import { View, StyleSheet, Platform } from 'react-native';
+import { PropsWithChildren } from 'react';
+import { StyleSheet } from 'react-native';
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
+import { Typography, View } from 'react-native-ui-lib';
 
-type AmountProps = {
-  iconName: 'remove-circle' | 'add-circle';
+type AmountProps = PropsWithChildren<{
   color: string;
   amount: number;
-};
+}>;
 
-export function Amount({ iconName, color, amount }: AmountProps) {
+export function Amount({ amount, children }: AmountProps) {
   return (
-    <View className="flex-row items-center gap-1.5">
-      <Ionicons color={color} name={iconName} size={18} style={styles.icon} allowFontScaling />
+    <View row gap-6 centerV>
+      {children}
       <AutoSizeText
         fontSize={24}
         adjustsFontSizeToFit
@@ -28,11 +28,7 @@ export function Amount({ iconName, color, amount }: AmountProps) {
 
 const styles = StyleSheet.create({
   amount: {
-    fontFamily: 'FiraSans-Bold',
+    ...Typography.bold,
     maxWidth: '80%',
-  },
-  icon: {
-    paddingRight: 4,
-    marginTop: Platform.select({ ios: 0, android: 4 }),
   },
 });
