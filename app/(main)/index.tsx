@@ -1,17 +1,57 @@
-import { useAuth } from '@/providers';
+import { useCategories } from '@/api/categories';
+import { useTransactions } from '@/api/transactions/useTransactions';
+import { TransactionsList } from '@/components/home/TransactionsList';
+import { Loader } from '@/shared/Loader';
+import { View, StyleSheet, Alert } from 'react-native';
+import { initialWindowMetrics } from 'react-native-safe-area-context';
+import { Text } from 'react-native-ui-lib';
 
-import { Text, View } from 'react-native';
+export default function Home() {
+  const {
+    categories,
+    isLoading: isCategoriesLoading,
+    error: categoriesError,
+    isError: isCategoriesError,
+  } = useCategories();
 
-export default function Main() {
-  const { signOut } = useAuth();
+  const {
+    transactions,
+    isLoading: isTransactionsLoading,
+    error: transactionsError,
+    isError: isTransactionsError,
+  } = useTransactions();
 
-  const onSignOut = () => {
-    signOut();
-  };
+  const isLoading = isCategoriesLoading || isTransactionsLoading;
+  const isError = isCategoriesError || isTransactionsError;
+
+  if (isLoading) {
+    return <Loader loading={isLoading} />;
+  }
+
+  if (isError) {
+    Alert.alert('Error', categoriesError?.message || transactionsError?.message);
+  }
+
+  if (!categories || !transactions) {
+    return (
+      <View style={styles.container}>
+        <Text>There are no transactions to display.</Text>
+      </View>
+    );
+  }
 
   return (
-    <View className="flex-1 justify-center items-center">
-      <Text onPress={onSignOut}>Sign Out</Text>
+    <View style={styles.container}>
+      <TransactionsList transactions={transactions} categories={categories} />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingBottom: initialWindowMetrics?.insets.bottom,
+    paddingLeft: initialWindowMetrics?.insets.left,
+    paddingRight: initialWindowMetrics?.insets.right,
+  },
+});

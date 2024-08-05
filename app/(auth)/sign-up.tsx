@@ -1,17 +1,18 @@
-import { auth } from '@/services/firebase.service';
+import { useRegisterUser } from '@/api/users';
 import { Button, Input, CustomLink, Title } from '@/shared';
 import { router } from 'expo-router';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { View, Text, Typography } from 'react-native-ui-lib';
 
 export default function SignUp() {
+  const { mutateAsync, isPending } = useRegisterUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSignUp = async () => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      await mutateAsync({ email, password });
 
       router.replace('/sign-in');
     } catch (err) {
@@ -22,7 +23,7 @@ export default function SignUp() {
   };
 
   return (
-    <View className="flex-1 justify-center items-center p-4">
+    <View flex paddingH-4 centerV centerH gap-10>
       <Title text={'Registration Page'} />
       <Input
         placeholder="Email"
@@ -32,10 +33,16 @@ export default function SignUp() {
         autoCapitalize="none"
       />
       <Input isPassword placeholder="Password" value={password} onChangeText={setPassword} />
-      <Button text="Sign Up" onPress={handleSignUp} />
-      <Text className="mt-4">
+      <Button text="Sign Up" onPress={handleSignUp} isLoading={isPending} />
+      <Text style={styles.question}>
         Already have an account? <CustomLink href={'/sign-in'} text={'Sign In'} />
       </Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  question: {
+    ...Typography.regular,
+  },
+});
