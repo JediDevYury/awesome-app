@@ -1,18 +1,18 @@
-import { auth } from '@/services/firebase.service';
+import { useRegisterUser } from '@/api/users';
 import { Button, Input, CustomLink, Title } from '@/shared';
 import { router } from 'expo-router';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { View, Text, Typography } from 'react-native-ui-lib';
 
 export default function SignUp() {
+  const { mutateAsync, isPending } = useRegisterUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSignUp = async () => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      await mutateAsync({ email, password });
 
       router.replace('/sign-in');
     } catch (err) {
@@ -33,7 +33,7 @@ export default function SignUp() {
         autoCapitalize="none"
       />
       <Input isPassword placeholder="Password" value={password} onChangeText={setPassword} />
-      <Button text="Sign Up" onPress={handleSignUp} />
+      <Button text="Sign Up" onPress={handleSignUp} isLoading={isPending} />
       <Text style={styles.question}>
         Already have an account? <CustomLink href={'/sign-in'} text={'Sign In'} />
       </Text>

@@ -1,4 +1,5 @@
 import { auth as FIREBASE_AUTH } from '@/services/firebase.service';
+import { queryClient } from '@/services/react-query.service';
 import {
   User,
   signInWithEmailAndPassword,
@@ -40,9 +41,13 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const signIn = async (email: string, password: string) => {
     setIsLoading(true);
 
-    await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
-
-    setIsLoading(false);
+    try {
+      await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
+    } catch (error) {
+      console.error('Failed to sign in', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const signOut = async () => {
@@ -51,7 +56,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     try {
       await firebaseSignOut(FIREBASE_AUTH);
       setUser(null);
-      setIsLoading(false);
+      await queryClient.invalidateQueries();
     } catch (error) {
       console.error('Failed to sign out', error);
     } finally {
@@ -60,9 +65,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, async (user) => {
       setIsLoading(false);
+      setUser(user);
     });
 
     return unsubscribe;

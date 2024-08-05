@@ -52,7 +52,7 @@ export function Button({
             {text}
           </Text>
         )}
-        {isLoading && <ActivityIndicator size="large" color={Colors.white} />}
+        {isLoading && <ActivityIndicator size="small" color={Colors.white} />}
       </Animated.View>
     </Pressable>
   );

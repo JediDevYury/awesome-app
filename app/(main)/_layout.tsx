@@ -41,11 +41,6 @@ export default function MainLayout() {
             <Ionicons name="log-out-outline" size={24} color="white" />
           </TouchableOpacity>
         ),
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => {}}>
-            <Ionicons name="create" size={24} color="white" />
-          </TouchableOpacity>
-        ),
       }}
     >
       <Stack.Screen name="index" />
