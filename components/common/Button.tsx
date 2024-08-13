@@ -6,7 +6,7 @@ import {
   PressableProps,
   StyleSheet,
 } from 'react-native';
-import { Colors, BorderRadiuses, Text, Typography } from 'react-native-ui-lib';
+import { Colors, BorderRadiuses, Text } from 'react-native-ui-lib';
 
 export function Button({
   text,
@@ -48,7 +48,7 @@ export function Button({
         ]}
       >
         {!isLoading && (
-          <Text style={styles.buttonText} numberOfLines={1} adjustsFontSizeToFit>
+          <Text button numberOfLines={1} adjustsFontSizeToFit>
             {text}
           </Text>
         )}
@@ -66,8 +66,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 36,
     borderRadius: BorderRadiuses.br10,
-  },
-  buttonText: {
-    ...Typography.button,
   },
 });

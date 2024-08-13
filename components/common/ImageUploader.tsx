@@ -103,8 +103,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    fontSize: Typography.medium.fontSize,
-    fontFamily: Typography.regular.fontFamily,
+    ...Typography.text70,
     color: Colors.white,
   },
 });

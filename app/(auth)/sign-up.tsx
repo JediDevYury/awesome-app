@@ -1,9 +1,8 @@
 import { useRegisterUser } from '@/api/users';
-import { Button, Input, CustomLink, Title } from '@/shared';
+import { Button, Input, CustomLink, Title } from '@/components/common';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
-import { View, Text, Typography } from 'react-native-ui-lib';
+import { View, Text } from 'react-native-ui-lib';
 
 export default function SignUp() {
   const { mutateAsync, isPending } = useRegisterUser();
@@ -34,15 +33,9 @@ export default function SignUp() {
       />
       <Input isPassword placeholder="Password" value={password} onChangeText={setPassword} />
       <Button text="Sign Up" onPress={handleSignUp} isLoading={isPending} />
-      <Text style={styles.question}>
+      <Text regular>
         Already have an account? <CustomLink href={'/sign-in'} text={'Sign In'} />
       </Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  question: {
-    ...Typography.regular,
-  },
-});

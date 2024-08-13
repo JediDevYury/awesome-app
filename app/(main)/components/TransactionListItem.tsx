@@ -1,5 +1,6 @@
 import { Amount } from './Amount';
-import { Card, CategoryColors, CategoryEmojies } from '@/shared';
+import { Card } from '@/components/common';
+import { CategoryColors, CategoryEmojies } from '@/shared';
 import { Category, CategoryType, Transaction } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import { Platform, StyleSheet } from 'react-native';

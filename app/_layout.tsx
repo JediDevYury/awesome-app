@@ -5,9 +5,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
 import '../configs/rn-ui-lib.config';
+import { ErrorNotification } from '@/components/common';
 import { AuthProvider } from '@/providers/auth.provider';
 import { persister, queryClient } from '@/services/react-query.service';
-import { ErrorNotification } from '@/shared';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
 import { focusManager } from '@tanstack/query-core';
 import { AppState, AppStateStatus, Platform } from 'react-native';

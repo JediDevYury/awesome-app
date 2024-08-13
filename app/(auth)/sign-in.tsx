@@ -1,9 +1,8 @@
 import { router } from 'expo-router';
-import { Text } from 'react-native';
-import { Typography, View } from 'react-native-ui-lib';
+import { View, Text } from 'react-native-ui-lib';
 
+import { Button, CustomLink, Input, Title } from '@/components/common';
 import { useAuth } from '@/providers';
-import { Button, CustomLink, Input, Title } from '@/shared';
 import React, { useState } from 'react';
 
 export default function SignIn() {
@@ -34,7 +33,7 @@ export default function SignIn() {
       />
       <Input isPassword placeholder="Password" value={password} onChangeText={setPassword} />
       <Button text="Sign In" onPress={handleSignIn} />
-      <Text style={Typography.regular}>
+      <Text regular>
         Don't have an account? <CustomLink href={'/sign-up'} text={'Sign Up'} />
       </Text>
     </View>

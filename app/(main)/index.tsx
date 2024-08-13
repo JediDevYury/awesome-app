@@ -1,7 +1,7 @@
+import { TransactionsList } from './components/TransactionsList';
 import { useCategories } from '@/api/categories';
 import { useTransactions } from '@/api/transactions/useTransactions';
-import { TransactionsList } from '@/components/home/TransactionsList';
-import { Loader } from '@/shared/Loader';
+import { Loader } from '@/components/common/Loader';
 import { View, StyleSheet, Alert } from 'react-native';
 import { initialWindowMetrics } from 'react-native-safe-area-context';
 import { Text } from 'react-native-ui-lib';

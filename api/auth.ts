@@ -1,4 +1,4 @@
-import { addUserToFirestore } from '@/api/firestone';
+import { addUserToFirestore } from '@/api/firestore';
 import { RegisterUserProps } from '@/api/types';
 import { auth } from '@/services/firebase.service';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
