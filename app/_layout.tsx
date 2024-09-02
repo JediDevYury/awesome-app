@@ -1,17 +1,17 @@
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { useFonts } from 'expo-font';
-import { Slot } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-import '../configs/rn-ui-lib.config';
+import '@/styles/unistyles';
+
 import { ErrorNotification } from '@/components/common';
-import { AuthProvider } from '@/providers/auth.provider';
+import { AuthProvider, useAuth } from '@/providers/auth.provider';
 import { persister, queryClient } from '@/services/react-query.service';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
 import { focusManager } from '@tanstack/query-core';
+import { Slot, useRouter, useSegments } from 'expo-router';
 import { AppState, AppStateStatus, Platform } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -28,16 +28,14 @@ function onAppStateChange(status: AppStateStatus) {
 }
 
 export function InitialLayout() {
+  const { user, authenticationStatus } = useAuth();
+  const router = useRouter();
+  const segments = useSegments();
   const [loaded, error] = useFonts({
     'FiraSans-Regular': require('../assets/fonts/FiraSans-Regular.ttf'),
     'FiraSans-SemiBold': require('../assets/fonts/FiraSans-SemiBold.ttf'),
     'FiraSans-Bold': require('../assets/fonts/FiraSans-Bold.ttf'),
   });
-
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-  useEffect(() => {
-    if (error) throw error;
-  }, [error]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', onAppStateChange);
@@ -46,18 +44,26 @@ export function InitialLayout() {
   }, []);
 
   useEffect(() => {
+    if (authenticationStatus === 'loading') return;
+
+    const inMainGroup = segments[0] === '(main)';
+
+    if (user && !inMainGroup) {
+      router.replace('/(main)');
+    } else if (!user && inMainGroup) {
+      router.replace('/(auth)/sign-in');
+    }
+  }, [user, authenticationStatus]);
+
+  useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
 
-  if (!loaded) {
-    return null;
-  }
-
   return (
     <>
-      <ErrorNotification error={error?.message} />
+      <ErrorNotification errorMessage={error?.message} />
       <Slot />
     </>
   );
@@ -69,9 +75,7 @@ function RootLayoutNav() {
   return (
     <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
       <AuthProvider>
-        <SafeAreaProvider>
-          <InitialLayout />
-        </SafeAreaProvider>
+        <InitialLayout />
       </AuthProvider>
     </PersistQueryClientProvider>
   );

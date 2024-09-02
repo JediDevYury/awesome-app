@@ -1,16 +1,32 @@
 import { EyeClosedIcon, EyeOpenedIcon } from '@/assets/icons';
 import { useState } from 'react';
-import { Pressable, TextInput, TextInputProps, StyleSheet } from 'react-native';
-import { BorderRadiuses, Colors, View } from 'react-native-ui-lib';
+import {
+  Pressable,
+  View,
+  TextInput,
+  TextInputProps,
+  Platform,
+  StyleProp,
+  TextStyle,
+} from 'react-native';
+import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-export function Input({ isPassword, style, ...props }: TextInputProps & { isPassword?: boolean }) {
+export function Input({
+  isPassword,
+  style,
+  inputStyle,
+  ...props
+}: TextInputProps & { isPassword?: boolean; inputStyle?: StyleProp<TextStyle> }) {
+  const { styles, theme } = useStyles(stylesheet);
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
   return (
-    <View padding-8 marginT-8 style={[styles.container, style]}>
+    <View style={[styles.container, style]}>
       <TextInput
         secureTextEntry={isPassword && !isPasswordVisible}
-        placeholderTextColor={Colors.neutral}
+        selectionColor={theme.colors.accent}
+        placeholderTextColor={theme.colors.gray}
+        style={[styles.input, inputStyle]}
         {...props}
       />
       {isPassword && (
@@ -25,14 +41,22 @@ export function Input({ isPassword, style, ...props }: TextInputProps & { isPass
   );
 }
 
-const styles = StyleSheet.create({
+const stylesheet = createStyleSheet((theme) => ({
   container: {
     position: 'relative',
-    width: '70%',
-    padding: 8,
+    width: '100%',
     borderWidth: 1,
-    borderColor: Colors.grey30,
-    borderRadius: BorderRadiuses.br10,
+    borderColor: theme.colors.accent,
+    borderRadius: theme.radius.s,
+    height: 32,
+    paddingHorizontal: theme.spacing.s,
+    paddingVertical: Platform.select({ ios: theme.spacing.s, android: 0 }),
+    backgroundColor: theme.colors.white,
+  },
+  input: {
+    fontFamily: theme.typography.variant.regular,
+    fontSize: theme.typography.size.m,
+    color: theme.colors.typography,
   },
   passwordIcon: {
     position: 'absolute',
@@ -42,4 +66,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+}));

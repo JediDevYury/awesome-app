@@ -1,6 +1,7 @@
 import { TransactionListItem } from './TransactionListItem';
 import { Category, Transaction } from '@/types';
-import { ScrollView, TouchableOpacity } from 'react-native';
+import { FlatList, TouchableOpacity } from 'react-native';
+import { useStyles } from 'react-native-unistyles';
 
 type TransactionsListProps = {
   transactions: Transaction[];
@@ -8,22 +9,24 @@ type TransactionsListProps = {
 };
 
 export function TransactionsList({ transactions, categories }: TransactionsListProps) {
+  const { theme } = useStyles();
   return (
-    <ScrollView
+    <FlatList
+      data={transactions}
+      keyExtractor={(item) => item.id.toString()}
       contentContainerStyle={{
-        paddingHorizontal: 8,
+        paddingHorizontal: theme.spacing.s,
+        paddingVertical: theme.spacing.s,
       }}
-    >
-      {transactions.map((transaction) => {
+      renderItem={({ item }) => {
+        const category = categories.find((category) => category.id === item.categoryId);
+
         return (
-          <TouchableOpacity key={transaction.id} activeOpacity={0.7}>
-            <TransactionListItem
-              transaction={transaction}
-              category={categories.find((category) => category.id === transaction.categoryId)!}
-            />
+          <TouchableOpacity key={item.id} activeOpacity={0.7}>
+            <TransactionListItem transaction={item} category={category} />
           </TouchableOpacity>
         );
-      })}
-    </ScrollView>
+      }}
+    />
   );
 }

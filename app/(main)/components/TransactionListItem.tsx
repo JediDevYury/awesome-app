@@ -1,75 +1,107 @@
 import { Amount } from './Amount';
-import { Card } from '@/components/common';
+import { Card, Chip } from '@/components/common';
 import { CategoryColors, CategoryEmojies } from '@/shared';
 import { Category, CategoryType, Transaction } from '@/types';
+import { GetKeys } from '@/types/generics';
 import { Ionicons } from '@expo/vector-icons';
-import { Platform, StyleSheet } from 'react-native';
-import { Colors, Text, Typography, View } from 'react-native-ui-lib';
+import { Platform, View, Text } from 'react-native';
+import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 type TransactionListItemProps = {
   transaction: Transaction;
-  category: Category;
+  category?: Category;
 };
 
 export const TransactionListItem = ({ transaction, category }: TransactionListItemProps) => {
-  const iconName = category.type === CategoryType.Income ? 'add-circle' : 'remove-circle';
+  const { styles } = useStyles(stylesheets);
+
+  if (!category) {
+    return (
+      <Card style={styles.card}>
+        <Text style={styles.text('semiBold', 'l')}>Category not found</Text>
+      </Card>
+    );
+  }
+
   const color = category.type === CategoryType.Income ? 'green' : 'red';
-  const categoryColor = CategoryColors[category.name ?? 'Default'];
-  const emoji = CategoryEmojies[category?.name ?? 'Default'];
 
   return (
-    <Card marginT-10>
-      <View flex row centerH gap-6>
-        <View style={styles.amountContainer}>
+    <Card style={styles.card}>
+      <View style={styles.container}>
+        <View style={styles.categoryColumn}>
           <Amount color={color} amount={transaction.amount}>
             <Ionicons
               color={color}
-              name={iconName}
-              size={18}
+              name={category.type === CategoryType.Income ? 'add-circle' : 'remove-circle'}
+              size={24}
               style={styles.icon}
               allowFontScaling
             />
           </Amount>
-          <View
-            paddingH-12
-            paddingV-6
-            style={[styles.categoryContainer, { backgroundColor: categoryColor + 60 }]}
-          >
-            <Text style={Typography.small}>
-              {emoji} {category.name}
-            </Text>
-          </View>
+          <Chip
+            style={styles.chip}
+            label={category.name}
+            color={CategoryColors[category.name ?? 'Default']}
+            emoji={CategoryEmojies[category.name ?? 'Default']}
+          />
         </View>
-        <View style={styles.transactionContainer}>
-          <Text style={Typography.bold}>{transaction.description}</Text>
-          <Text style={Typography.regular}>Transaction number {transaction.id}</Text>
-          <Text style={styles.transactionDate}>{new Date(transaction.date).toDateString()}</Text>
+        <View style={styles.transactionColumn}>
+          <Text style={styles.text('semiBold', 'l')}>{transaction.description}</Text>
+          <Text style={styles.text('regular', 'm', 'gray')}>
+            Transaction number {transaction.id}
+          </Text>
+          <Text style={styles.text('semiBold', 'm', 'accent')}>
+            {new Date(transaction.date).toDateString()}
+          </Text>
         </View>
       </View>
     </Card>
   );
 };
 
-const styles = StyleSheet.create({
-  amountContainer: {
+const stylesheets = createStyleSheet((theme) => ({
+  card: {
+    marginTop: theme.spacing.s,
+  },
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: theme.spacing.s,
+    padding: theme.spacing.s,
+  },
+  categoryColumn: {
     width: '40%',
-    gap: 6,
+    gap: theme.spacing.s,
   },
-  categoryContainer: {
+  category: {
+    paddingVertical: theme.spacing.xs,
+    paddingHorizontal: theme.spacing.s,
     alignSelf: 'flex-start',
-    borderRadius: 10,
+    borderRadius: theme.radius.m,
   },
-  transactionContainer: {
+  transactionColumn: {
     flexGrow: 1,
     flexShrink: 1,
-    gap: 6,
-  },
-  transactionDate: {
-    ...Typography.small,
-    color: Colors.neutral,
+    gap: theme.spacing.s,
   },
   icon: {
     paddingRight: 4,
     marginTop: Platform.select({ ios: 0, android: 4 }),
   },
-});
+  transactionNumber: {
+    color: theme.colors['gray'],
+  },
+  chip: {
+    maxWidth: 140,
+  },
+  text: (
+    font: GetKeys<typeof theme.typography.variant>,
+    size: GetKeys<typeof theme.typography.size>,
+    color?: GetKeys<typeof theme.colors>,
+  ) => ({
+    fontFamily: theme.typography.variant[font],
+    fontSize: theme.typography.size[size],
+    color: theme.colors[color || 'typography'],
+  }),
+}));

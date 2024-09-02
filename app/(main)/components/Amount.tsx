@@ -1,8 +1,8 @@
 /* eslint-disable react-native/no-raw-text */
 import { PropsWithChildren } from 'react';
-import { StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
-import { Typography, View } from 'react-native-ui-lib';
+import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 type AmountProps = PropsWithChildren<{
   color: string;
@@ -10,11 +10,13 @@ type AmountProps = PropsWithChildren<{
 }>;
 
 export function Amount({ amount, children }: AmountProps) {
+  const { styles, theme } = useStyles(stylesheet);
+
   return (
-    <View row gap-6 centerV>
+    <View style={styles.amount}>
       {children}
       <AutoSizeText
-        fontSize={24}
+        fontSize={theme.typography.size.xl}
         adjustsFontSizeToFit
         mode={ResizeTextMode.max_lines}
         numberOfLines={1}
@@ -26,9 +28,13 @@ export function Amount({ amount, children }: AmountProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const stylesheet = createStyleSheet((theme) => ({
   amount: {
-    ...Typography.bold,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.xs,
+    fontFamily: theme.typography.variant.bold,
+    fontSize: theme.typography.size.m,
     maxWidth: '80%',
   },
-});
+}));

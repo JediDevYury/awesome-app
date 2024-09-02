@@ -21,7 +21,7 @@ export const fetchTransactions = async () => {
 
 export const useTransactions = () => {
   const { data, ...query } = useQuery({
-    queryKey: ['transaction'],
+    queryKey: ['transactions'],
     queryFn: fetchTransactions,
   });
 

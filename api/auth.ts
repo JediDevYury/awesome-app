@@ -11,6 +11,10 @@ export const registerUser = async ({ email, password }: RegisterUserProps) => {
 
     return userCredential.user;
   } catch (error) {
-    console.error('Failed to register user', error);
+    if (error instanceof Error) {
+      throw error;
+    }
+
+    throw new Error('An unknown error occurred');
   }
 };

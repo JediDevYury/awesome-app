@@ -1,16 +1,19 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
-import { Text, StyleSheet, Dimensions } from 'react-native';
+import { Text, Dimensions } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { Colors } from 'react-native-ui-lib';
+import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-export interface ErrorNotificationProps {
-  error?: string;
-}
+export type ErrorNotificationProps = {
+  errorMessage?: string;
+  clearError?: () => void;
+};
 
-export function ErrorNotification({ error }: ErrorNotificationProps) {
+export function ErrorNotification({ errorMessage, clearError }: ErrorNotificationProps) {
   const [isShown, setIsShown] = useState<boolean>(false);
-  const animatedValue = useSharedValue(-100);
+
+  const { styles } = useStyles(stylesheet);
+  const animatedValue = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -23,20 +26,23 @@ export function ErrorNotification({ error }: ErrorNotificationProps) {
   };
 
   useEffect(() => {
-    if (!error) {
+    if (!errorMessage) {
+      setIsShown(false);
       return;
     }
+
     setIsShown(true);
 
     const timerId = setTimeout(() => {
-      setIsShown(false);
       animatedValue.value = withTiming(-100, { duration: 300 });
+      setIsShown(false);
+      clearError?.();
     }, 3000);
 
     return () => {
       clearTimeout(timerId);
     };
-  }, [error]);
+  }, [errorMessage]);
 
   if (!isShown) {
     return <></>;
@@ -45,22 +51,27 @@ export function ErrorNotification({ error }: ErrorNotificationProps) {
   return (
     <Animated.View style={[styles.error, animatedStyle]} onLayout={onEnter}>
       <Ionicons name="alert-circle-outline" size={24} color="white" />
-      <Text>{error}</Text>
+      <Text style={styles.text}>{errorMessage}</Text>
     </Animated.View>
   );
 }
 
-// Text className="font-firaBold text-lg text-white text-center"
-
-const styles = StyleSheet.create({
+const stylesheet = createStyleSheet((theme) => ({
   error: {
     position: 'absolute',
+    top: 50,
+    zIndex: 100,
     width: Dimensions.get('screen').width,
     flexDirection: 'row',
-    gap: 10,
+    alignItems: 'center',
+    gap: theme.spacing.s,
     justifyContent: 'center',
-    backgroundColor: Colors.primary,
-    padding: 15,
-    top: 50,
+    backgroundColor: theme.colors.accent,
+    padding: theme.spacing.m,
   },
-});
+  text: {
+    color: theme.colors.white,
+    fontSize: theme.typography.size.l,
+    fontFamily: theme.typography.variant.regular,
+  },
+}));

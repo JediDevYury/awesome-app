@@ -1,5 +1,6 @@
 import { auth as FIREBASE_AUTH } from '@/services/firebase.service';
 import { queryClient } from '@/services/react-query.service';
+import { handleError } from '@/shared';
 import {
   User,
   signInWithEmailAndPassword,
@@ -13,11 +14,13 @@ const AuthContext = createContext<{
   signOut: () => Promise<void>;
   user: User | null;
   isLoading: boolean;
+  authenticationStatus: string;
 }>({
   signIn: async () => {},
   signOut: async () => {},
   user: null,
   isLoading: false,
+  authenticationStatus: 'loading',
 });
 
 export function useAuth() {
@@ -36,15 +39,16 @@ export function useAuth() {
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [authenticationStatus, setAuthenticationStatus] = useState('loading');
 
   const signIn = async (email: string, password: string) => {
     setIsLoading(true);
 
     try {
       await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
-    } catch (error) {
-      console.error('Failed to sign in', error);
+    } catch (err) {
+      handleError(err);
     } finally {
       setIsLoading(false);
     }
@@ -54,27 +58,31 @@ export function AuthProvider({ children }: PropsWithChildren) {
     setIsLoading(true);
 
     try {
+      await queryClient.invalidateQueries();
       await firebaseSignOut(FIREBASE_AUTH);
       setUser(null);
-      await queryClient.invalidateQueries();
-    } catch (error) {
-      console.error('Failed to sign out', error);
+    } catch (err) {
+      handleError(err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, async (user) => {
-      setIsLoading(false);
+  const nextOrObserver = (user: User | null) => {
+    if (user) {
       setUser(user);
-    });
+    }
+    setAuthenticationStatus(user ? 'authenticated' : 'unauthenticated');
+  };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, nextOrObserver, handleError);
 
     return unsubscribe;
   }, []);
 
   return (
-    <AuthContext.Provider value={{ signIn, signOut, user, isLoading }}>
+    <AuthContext.Provider value={{ signIn, signOut, user, isLoading, authenticationStatus }}>
       {children}
     </AuthContext.Provider>
   );

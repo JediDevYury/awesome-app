@@ -1,49 +1,27 @@
-import { Redirect, Stack, useRouter } from 'expo-router';
+import { FontAwesome } from '@expo/vector-icons';
 
-import { Loader } from '@/components/common/Loader';
-import { useAuth } from '@/providers';
-import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
-import { TouchableOpacity } from 'react-native';
-import { Colors } from 'react-native-ui-lib';
+import { Tabs } from 'expo-router';
+import { useStyles } from 'react-native-unistyles';
 
-export default function MainLayout() {
-  const { user, signOut, isLoading } = useAuth();
-
-  const router = useRouter();
-
-  const handleLogout = async () => {
-    await signOut();
-    router.navigate('/sign-in');
-  };
-
-  if (isLoading) return <Loader loading={isLoading} />;
-
-  if (!user) {
-    return <Redirect href="/sign-in" />;
-  }
+export default function TabLayout() {
+  const { theme } = useStyles();
 
   return (
-    <Stack
-      screenOptions={{
-        headerTitle: 'Transactions',
-        headerTitleStyle: {
-          color: 'white',
-          fontFamily: 'FiraSans-SemiBold',
-          fontSize: 18,
-        },
-        headerStyle: {
-          backgroundColor: Colors.primary,
-        },
-        headerTitleAlign: 'center',
-        headerRight: () => (
-          <TouchableOpacity onPress={handleLogout}>
-            <Ionicons name="log-out-outline" size={24} color="white" />
-          </TouchableOpacity>
-        ),
-      }}
-    >
-      <Stack.Screen name="index" />
-    </Stack>
+    <Tabs screenOptions={{ tabBarActiveTintColor: theme.colors.accent }}>
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Transactions',
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="cog" color={color} />,
+        }}
+      />
+    </Tabs>
   );
 }

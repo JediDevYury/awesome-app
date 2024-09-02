@@ -1,70 +1,80 @@
+import { radius, spacing } from '@/configs/theme';
 import {
   ActivityIndicator,
-  Animated,
   GestureResponderEvent,
+  Platform,
   Pressable,
   PressableProps,
-  StyleSheet,
+  Text,
 } from 'react-native';
-import { Colors, BorderRadiuses, Text } from 'react-native-ui-lib';
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 export function Button({
   text,
   isLoading,
   ...props
 }: PressableProps & { text: string; isLoading?: boolean }) {
-  const animatedValue = new Animated.Value(100);
-  const color = animatedValue.interpolate({
-    inputRange: [0, 100],
-    outputRange: [Colors.primaryHover, Colors.primary],
+  const { styles, theme } = useStyles(stylesheet);
+  const animatedValue = useSharedValue(100);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      backgroundColor: interpolateColor(
+        animatedValue.value,
+        [0, 100],
+        [theme.colors.hover, theme.colors.accent],
+      ),
+    };
   });
 
   const fadeIn = (e: GestureResponderEvent) => {
-    Animated.timing(animatedValue, {
-      toValue: 0,
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
+    animatedValue.value = withTiming(0, { duration: 100 });
     props.onPressIn && props.onPressIn(e);
   };
 
   const fadeOut = (e: GestureResponderEvent) => {
-    Animated.timing(animatedValue, {
-      toValue: 100,
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
+    animatedValue.value = withTiming(100, { duration: 100 });
     props.onPressOut && props.onPressOut(e);
   };
 
   return (
     <Pressable {...props} onPressIn={fadeIn} onPressOut={fadeOut}>
-      <Animated.View
-        style={[
-          styles.container,
-          {
-            backgroundColor: color,
-          },
-        ]}
-      >
+      <Animated.View style={[styles.container, animatedStyle]}>
         {!isLoading && (
-          <Text button numberOfLines={1} adjustsFontSizeToFit>
+          <Text style={styles.text} numberOfLines={1} adjustsFontSizeToFit>
             {text}
           </Text>
         )}
-        {isLoading && <ActivityIndicator size="small" color={Colors.white} />}
+        {isLoading && <ActivityIndicator size="small" color={theme.colors.white} />}
       </Animated.View>
     </Pressable>
   );
 }
 
-const styles = StyleSheet.create({
+const stylesheet = createStyleSheet((theme) => ({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.primary,
-    paddingHorizontal: 10,
+    backgroundColor: theme.colors.accent,
+    paddingHorizontal: spacing.m,
     height: 36,
-    borderRadius: BorderRadiuses.br10,
+    borderRadius: radius.s,
   },
-});
+  text: {
+    fontFamily: theme.typography.variant.bold,
+    color: theme.colors.white,
+    ...Platform.select({
+      android: {
+        marginBottom: theme.spacing.xs / 2,
+        paddingHorizontal: theme.spacing.s,
+        fontSize: theme.typography.size.l,
+      },
+    }),
+  },
+}));

@@ -1,12 +1,15 @@
-import { TransactionsList } from './components/TransactionsList';
 import { useCategories } from '@/api/categories';
-import { useTransactions } from '@/api/transactions/useTransactions';
+import { useTransactions } from '@/api/transactions';
+import { TransactionsList } from '@/app/(main)/components/TransactionsList';
 import { Loader } from '@/components/common/Loader';
-import { View, StyleSheet, Alert } from 'react-native';
-import { initialWindowMetrics } from 'react-native-safe-area-context';
-import { Text } from 'react-native-ui-lib';
+import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import { View, Text, Alert, TouchableOpacity } from 'react-native';
+import { createStyleSheet, useStyles, UnistylesRuntime } from 'react-native-unistyles';
 
 export default function Home() {
+  const { styles } = useStyles(stylesheet);
+
   const {
     categories,
     isLoading: isCategoriesLoading,
@@ -43,15 +46,43 @@ export default function Home() {
   return (
     <View style={styles.container}>
       <TransactionsList transactions={transactions} categories={categories} />
+      <TouchableOpacity
+        style={styles.fab}
+        activeOpacity={0.7}
+        onPress={() => {
+          Alert.alert('FAB button pressed');
+        }}
+      >
+        <Ionicons name="add" size={24} color="white" />
+      </TouchableOpacity>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const stylesheet = createStyleSheet((theme) => ({
   container: {
     flex: 1,
-    paddingBottom: initialWindowMetrics?.insets.bottom,
-    paddingLeft: initialWindowMetrics?.insets.left,
-    paddingRight: initialWindowMetrics?.insets.right,
+    paddingLeft: UnistylesRuntime.insets.left,
+    paddingRight: UnistylesRuntime.insets.right,
+    backgroundColor: theme.colors.background,
   },
-});
+  text: {
+    color: theme.colors.typography,
+  },
+  fab: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    borderRadius: theme.radius.l,
+    backgroundColor: theme.colors.accent,
+    justifyContent: 'center',
+    alignItems: 'center',
+    right: 20,
+    bottom: 20,
+    elevation: 8,
+    shadowColor: theme.colors.accent,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+  },
+}));
