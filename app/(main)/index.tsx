@@ -1,51 +1,15 @@
-import { useCategories } from '@/api/categories';
-import { useTransactions } from '@/api/transactions';
-import { TransactionsList } from '@/app/(main)/components/TransactionsList';
-import { Loader } from '@/components/common/Loader';
+import { TransactionsList } from './components/TransactionsList';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { View, Text, Alert, TouchableOpacity } from 'react-native';
+import { View, Alert, TouchableOpacity } from 'react-native';
 import { createStyleSheet, useStyles, UnistylesRuntime } from 'react-native-unistyles';
 
 export default function Home() {
   const { styles } = useStyles(stylesheet);
 
-  const {
-    categories,
-    isLoading: isCategoriesLoading,
-    error: categoriesError,
-    isError: isCategoriesError,
-  } = useCategories();
-
-  const {
-    transactions,
-    isLoading: isTransactionsLoading,
-    error: transactionsError,
-    isError: isTransactionsError,
-  } = useTransactions();
-
-  const isLoading = isCategoriesLoading || isTransactionsLoading;
-  const isError = isCategoriesError || isTransactionsError;
-
-  if (isLoading) {
-    return <Loader loading={isLoading} />;
-  }
-
-  if (isError) {
-    Alert.alert('Error', categoriesError?.message || transactionsError?.message);
-  }
-
-  if (!categories || !transactions) {
-    return (
-      <View style={styles.container}>
-        <Text>There are no transactions to display.</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
-      <TransactionsList transactions={transactions} categories={categories} />
+      <TransactionsList />
       <TouchableOpacity
         style={styles.fab}
         activeOpacity={0.7}

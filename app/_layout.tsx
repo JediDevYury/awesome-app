@@ -38,12 +38,6 @@ export function InitialLayout() {
   });
 
   useEffect(() => {
-    const subscription = AppState.addEventListener('change', onAppStateChange);
-
-    return () => subscription.remove();
-  }, []);
-
-  useEffect(() => {
     if (authenticationStatus === 'loading') return;
 
     const inMainGroup = segments[0] === '(main)';
@@ -71,6 +65,12 @@ export function InitialLayout() {
 
 function RootLayoutNav() {
   useReactQueryDevTools(queryClient);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', onAppStateChange);
+
+    return () => subscription.remove();
+  }, []);
 
   return (
     <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
