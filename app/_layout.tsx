@@ -1,10 +1,17 @@
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { useFonts } from 'expo-font';
-import { Slot } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-import '../global.css';
-import { AuthProvider } from '@/providers/auth.provider';
+import '@/styles/unistyles';
+
+import { ErrorNotification } from '@/components/common';
+import { AuthProvider, useAuth } from '@/providers/auth.provider';
+import { persister, queryClient } from '@/services/react-query.service';
+import { useReactQueryDevTools } from '@dev-plugins/react-query';
+import { focusManager } from '@tanstack/query-core';
+import { Slot, useRouter, useSegments } from 'expo-router';
+import { AppState, AppStateStatus, Platform } from 'react-native';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -14,17 +21,33 @@ export {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+function onAppStateChange(status: AppStateStatus) {
+  if (Platform.OS !== 'web') {
+    focusManager.setFocused(status === 'active');
+  }
+}
+
 export function InitialLayout() {
+  const { user, authenticationStatus } = useAuth();
+  const router = useRouter();
+  const segments = useSegments();
   const [loaded, error] = useFonts({
     'FiraSans-Regular': require('../assets/fonts/FiraSans-Regular.ttf'),
     'FiraSans-SemiBold': require('../assets/fonts/FiraSans-SemiBold.ttf'),
     'FiraSans-Bold': require('../assets/fonts/FiraSans-Bold.ttf'),
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
-    if (error) throw error;
-  }, [error]);
+    if (authenticationStatus === 'loading') return;
+
+    const inMainGroup = segments[0] === '(main)';
+
+    if (user && !inMainGroup) {
+      router.replace('/(main)');
+    } else if (!user && inMainGroup) {
+      router.replace('/(auth)/sign-in');
+    }
+  }, [user, authenticationStatus]);
 
   useEffect(() => {
     if (loaded) {
@@ -32,18 +55,29 @@ export function InitialLayout() {
     }
   }, [loaded]);
 
-  if (!loaded) {
-    return null;
-  }
-
-  return <Slot />;
+  return (
+    <>
+      <ErrorNotification errorMessage={error?.message} />
+      <Slot />
+    </>
+  );
 }
 
 function RootLayoutNav() {
+  useReactQueryDevTools(queryClient);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', onAppStateChange);
+
+    return () => subscription.remove();
+  }, []);
+
   return (
-    <AuthProvider>
-      <InitialLayout />
-    </AuthProvider>
+    <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
+      <AuthProvider>
+        <InitialLayout />
+      </AuthProvider>
+    </PersistQueryClientProvider>
   );
 }
 
