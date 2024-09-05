@@ -1,4 +1,5 @@
 import { Button, SegmentedControl } from '@/components/common';
+import HeaderBar from '@/components/common/HeaderBar';
 import { useAuth } from '@/providers';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -23,6 +24,7 @@ export default function Settings() {
 
   return (
     <View style={styles.container}>
+      <HeaderBar />
       <SegmentedControl
         selectedOption={selectedOption}
         options={options}

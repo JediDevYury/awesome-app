@@ -2,12 +2,12 @@ import { TransactionListItem } from './TransactionListItem';
 import { useCategories } from '@/api/categories';
 import { useTransactions } from '@/api/transactions';
 import { ErrorNotification, Loader } from '@/components/common';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { FlatList, TouchableOpacity, View, Text } from 'react-native';
 import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
 
 export function TransactionsList() {
-  const { theme, styles } = useStyles(stylesheet);
+  const { styles } = useStyles(stylesheet);
 
   const { categories, error: categoriesError } = useCategories();
 
@@ -20,7 +20,10 @@ export function TransactionsList() {
   } = useTransactions();
   const errorMessage = categoriesError?.message || transactionsError?.message;
 
-  const getCategory = (id: string) => categories?.find((category) => category.id === id);
+  const getCategory = useMemo(
+    () => (id: string) => categories?.find((category) => category.id === id),
+    [categories],
+  );
 
   if (!categories?.length) {
     return (
@@ -36,11 +39,8 @@ export function TransactionsList() {
       <FlatList
         data={transactions}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{
-          paddingHorizontal: theme.spacing.s,
-          paddingTop: 20,
-          paddingBottom: 20,
-        }}
+        contentContainerStyle={styles.flatListContainer}
+        contentInsetAdjustmentBehavior={'automatic'}
         renderItem={({ item }) => {
           return (
             <TouchableOpacity activeOpacity={0.7}>
@@ -73,6 +73,11 @@ const stylesheet = createStyleSheet((theme) => ({
     backgroundColor: theme.colors.background,
     paddingTop: UnistylesRuntime.insets.top,
     paddingBottom: UnistylesRuntime.insets.bottom,
+  },
+  flatListContainer: {
+    paddingHorizontal: theme.spacing.s,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
   text: {
     color: theme.colors.typography,
