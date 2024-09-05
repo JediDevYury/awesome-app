@@ -1,44 +1,95 @@
 import { useRegisterUser } from '@/api/users';
 import { Button, Input, CustomLink, Title } from '@/components/common';
 import { ErrorNotification } from '@/components/common/ErrorNotification';
+import { type SignUpFormSchema, signUpFormSchema } from '@/forms/schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Text, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 export default function SignUp() {
   const router = useRouter();
-  const { mutate, isPending, isSuccess, error } = useRegisterUser();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [error, setError] = useState<Error | null>(null);
+  const { mutateAsync, isPending } = useRegisterUser();
+
   const { styles } = useStyles(stylesheet);
 
-  const handleSignUp = () => {
-    mutate({ email, password });
+  const methods = useForm({
+    resolver: zodResolver(signUpFormSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    mode: 'onBlur',
+  });
+
+  const onSubmit: SubmitHandler<SignUpFormSchema> = async (formData) => {
+    try {
+      const { email, password } = formData;
+
+      await mutateAsync({ email, password });
+
+      router.navigate('/sign-in');
+    } catch (err) {
+      setError(error instanceof Error ? error : new Error('An unknown error occurred'));
+    }
   };
 
-  useEffect(() => {
-    if (!isSuccess) {
-      return;
-    }
-
-    router.replace('/');
-  }, [isSuccess]);
+  const clearError = () => {
+    setError(null);
+  };
 
   return (
     <>
-      <ErrorNotification errorMessage={error?.message} />
+      <ErrorNotification errorMessage={error?.message} clearError={clearError} />
       <View style={styles.container}>
         <Title text="Registration Page" />
-        <Input
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <Input isPassword placeholder="Password" value={password} onChangeText={setPassword} />
-        <Button text="Sign Up" onPress={handleSignUp} isLoading={isPending} />
+        <FormProvider {...methods}>
+          <Controller
+            name="email"
+            control={methods.control}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <Input
+                placeholder="Email"
+                value={value}
+                onChangeText={onChange}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                errorMessage={error?.message}
+              />
+            )}
+          />
+          <Controller
+            name="password"
+            control={methods.control}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <Input
+                placeholder="Password"
+                value={value}
+                onChangeText={onChange}
+                errorMessage={error?.message}
+                isPassword
+              />
+            )}
+          />
+          <Controller
+            name="confirmPassword"
+            control={methods.control}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <Input
+                placeholder="Confirm Password"
+                value={value}
+                onChangeText={onChange}
+                errorMessage={error?.message}
+                isPassword
+              />
+            )}
+          />
+          <Button text="Sign Up" onPress={methods.handleSubmit(onSubmit)} isLoading={isPending} />
+        </FormProvider>
         <Text>
           Already have an account? <CustomLink href={'/'} text={'Sign In'} />
         </Text>
