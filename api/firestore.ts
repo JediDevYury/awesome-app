@@ -17,7 +17,7 @@ export const addUserToFirestore = async (user: User) => {
       createdAt: new Date(),
     });
   } catch (error) {
-    console.error('Failed to add user to Firestore', error);
+    throw new Error('Failed to add user to firestore');
   }
 };
 
