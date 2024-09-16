@@ -30,8 +30,10 @@ export const fetchTransactions = async (
 
 export const useTransactions = () => {
   const queryClient = useQueryClient();
+  const queryKey = ['transactions'];
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, ...query } = useInfiniteQuery({
-    queryKey: ['transactions'],
+    queryKey,
     initialPageParam: null,
     staleTime: 0,
     queryFn: ({ pageParam }) => fetchTransactions(pageParam),
@@ -54,7 +56,7 @@ export const useTransactions = () => {
   const transactions = data?.pages.flatMap((page) => page.transactions) || [];
 
   useEffect(() => {
-    queryClient.setQueryData(['transactions'], (existingData: typeof data) => {
+    queryClient.setQueryData(queryKey, (existingData: typeof data) => {
       if (!existingData) return { pageParams: [], pages: [] };
 
       const { pageParams, pages } = existingData;
@@ -65,7 +67,7 @@ export const useTransactions = () => {
       };
     });
     queryClient.invalidateQueries({
-      queryKey: ['transactions'],
+      queryKey,
     });
   }, [queryClient]);
 
