@@ -10,6 +10,7 @@ import { AuthProvider, useAuth } from '@/providers/auth.provider';
 import { persister, queryClient } from '@/services/react-query.service';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
 import { focusManager } from '@tanstack/query-core';
+import { useQueryClient } from '@tanstack/react-query';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import { AppState, AppStateStatus, Platform } from 'react-native';
 
@@ -21,14 +22,9 @@ export {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-function onAppStateChange(status: AppStateStatus) {
-  if (Platform.OS !== 'web') {
-    focusManager.setFocused(status === 'active');
-  }
-}
-
 export function InitialLayout() {
-  const { user, authenticationStatus } = useAuth();
+  const { user, authenticationStatus, signOut } = useAuth();
+  const queryClient = useQueryClient();
   const router = useRouter();
   const segments = useSegments();
   const [loaded, error] = useFonts({
@@ -36,6 +32,16 @@ export function InitialLayout() {
     'FiraSans-SemiBold': require('../assets/fonts/FiraSans-SemiBold.ttf'),
     'FiraSans-Bold': require('../assets/fonts/FiraSans-Bold.ttf'),
   });
+  const hideSplashScreen = loaded && !(authenticationStatus === 'loading');
+
+  const onAppStateChange = async (status: AppStateStatus) => {
+    if (Platform.OS !== 'web') {
+      focusManager.setFocused(status === 'active');
+    }
+    if (status === 'inactive') {
+      await signOut();
+    }
+  };
 
   useEffect(() => {
     if (authenticationStatus === 'loading') return;
@@ -43,17 +49,25 @@ export function InitialLayout() {
     const inMainGroup = segments[0] === '(main)';
 
     if (user && !inMainGroup) {
-      router.replace('/(main)');
+      router.replace('/(main)/(tabs)/transactions');
     } else if (!user && inMainGroup) {
       router.replace('/(auth)/sign-in');
     }
+
+    return queryClient.clear;
   }, [user, authenticationStatus]);
 
   useEffect(() => {
-    if (loaded) {
+    if (hideSplashScreen) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [hideSplashScreen]);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', onAppStateChange);
+
+    return () => subscription.remove();
+  }, []);
 
   return (
     <>
@@ -65,12 +79,6 @@ export function InitialLayout() {
 
 function RootLayoutNav() {
   useReactQueryDevTools(queryClient);
-
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', onAppStateChange);
-
-    return () => subscription.remove();
-  }, []);
 
   return (
     <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>

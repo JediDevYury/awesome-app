@@ -3,14 +3,12 @@ import { Button, Input, CustomLink, Title } from '@/components/common';
 import { ErrorNotification } from '@/components/common/ErrorNotification';
 import { type SignUpFormSchema, signUpFormSchema } from '@/forms/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Text, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 export default function SignUp() {
-  const router = useRouter();
   const [error, setError] = useState<Error | null>(null);
   const { mutateAsync, isPending } = useRegisterUser();
 
@@ -31,8 +29,6 @@ export default function SignUp() {
       const { email, password } = formData;
 
       await mutateAsync({ email, password });
-
-      router.navigate('/sign-in');
     } catch (err) {
       setError(error instanceof Error ? error : new Error('An unknown error occurred'));
     }

@@ -1,28 +1,32 @@
-import { FontAwesome } from '@expo/vector-icons';
-
-import { Tabs } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { Link, Stack } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
 import { useStyles } from 'react-native-unistyles';
 
-export default function TabLayout() {
+const Layout = () => {
   const { theme } = useStyles();
 
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: theme.colors.accent }}>
-      <Tabs.Screen
-        name="index"
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(modals)/create-transaction"
         options={{
-          title: 'Transactions',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
+          presentation: 'transparentModal',
+          animation: 'fade',
+          headerTransparent: true,
+          headerTintColor: theme.colors.white,
+          headerTitle: 'Create Transaction',
+          headerLeft: () => (
+            <Link replace href={'/(main)/(tabs)/transactions'} asChild>
+              <TouchableOpacity>
+                <Ionicons name="close-outline" size={24} color={theme.colors.white} />
+              </TouchableOpacity>
+            </Link>
+          ),
         }}
       />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          headerShown: false,
-          title: 'Settings',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="cog" color={color} />,
-        }}
-      />
-    </Tabs>
+    </Stack>
   );
-}
+};
+export default Layout;

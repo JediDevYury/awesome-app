@@ -9,21 +9,32 @@ import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unis
 export function TransactionsList() {
   const { styles } = useStyles(stylesheet);
 
-  const { categories, error: categoriesError } = useCategories();
+  const { categories, error: categoriesError, isLoading: isCategoriesLoading } = useCategories();
 
   const {
     transactions = [],
     isFetchingNextPage,
+    isLoading: isTransactionsLoading,
     hasNextPage,
     error: transactionsError,
     loadMoreTransactions,
   } = useTransactions();
+
+  const isLoading = isCategoriesLoading || isTransactionsLoading;
   const errorMessage = categoriesError?.message || transactionsError?.message;
 
   const getCategory = useMemo(
     () => (id: string) => categories?.find((category) => category.id === id),
     [categories],
   );
+
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Loader loading={isLoading} />
+      </View>
+    );
+  }
 
   if (!categories?.length) {
     return (
