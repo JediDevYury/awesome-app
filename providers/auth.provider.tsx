@@ -13,6 +13,7 @@ const AuthContext = createContext<{
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   user: User | null;
+  setUser: (user: User | null) => void;
   isLoading: boolean;
   authenticationStatus: string;
 }>({
@@ -21,6 +22,7 @@ const AuthContext = createContext<{
   user: null,
   isLoading: false,
   authenticationStatus: 'loading',
+  setUser: () => {},
 });
 
 export function useAuth() {
@@ -38,7 +40,7 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: PropsWithChildren) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [authenticationStatus, setAuthenticationStatus] = useState('loading');
 
@@ -82,7 +84,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ signIn, signOut, user, isLoading, authenticationStatus }}>
+    <AuthContext.Provider
+      value={{ signIn, signOut, user, isLoading, authenticationStatus, setUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

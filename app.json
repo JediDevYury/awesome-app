@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "awesome-app",
-    "slug": "awesome-app",
+    "slug": "awesomeapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -14,7 +14,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.jedidevyury.awesome-app"
+      "bundleIdentifier": "com.jedidevyury.awesomeapp"
     },
     "android": {
       "adaptiveIcon": {
@@ -43,6 +43,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0d68cab9-4ff9-4d07-833c-7e432fe2659b"
+      }
     }
   }
 }

@@ -11,23 +11,19 @@ module.exports = {
     'react-native/no-raw-text': 2,
     'react-native/no-single-element-style-arrays': 2,
     'react-hooks/exhaustive-deps': 'off',
-    'prettier/prettier': [
-      'error',
-      {
-        singleQuote: true,
-        semi: true,
-        trailingComma: 'all',
-        bracketSpacing: true,
-        printWidth: 100,
-        endOfLine: 'auto',
-      },
-    ],
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+      },
+    ],
   },
   ignorePatterns: ['app-example', 'components-example'],
 };

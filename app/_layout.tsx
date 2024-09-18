@@ -54,7 +54,9 @@ export function InitialLayout() {
       router.replace('/(auth)/sign-in');
     }
 
-    return queryClient.clear;
+    return () => {
+      queryClient.clear();
+    };
   }, [user, authenticationStatus]);
 
   useEffect(() => {

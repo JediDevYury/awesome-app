@@ -3,13 +3,23 @@ import { ErrorNotification } from '@/components/common';
 import { signInFormSchema, type SignInFormSchema } from '@/forms/schemas';
 import { useAuth } from '@/providers';
 import { zodResolver } from '@hookform/resolvers/zod';
+import * as Google from 'expo-auth-session/providers/google';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import * as WebBrowser from 'expo-web-browser';
+import React, { useEffect, useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Text, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+WebBrowser.maybeCompleteAuthSession();
+
 export default function SignIn() {
+  const { setUser } = useAuth();
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [_, response, promptAsync] = Google.useAuthRequest({
+    iosClientId: '1070189961360-0sq5ctd0bkkr496oahq4mmpqu2407j2j.apps.googleusercontent.com',
+    androidClientId: '1070189961360-lt7vvjq7gdeshcj9rkudk8erip80mchu.apps.googleusercontent.com',
+  });
   const { styles } = useStyles(stylesheet);
   const [error, setError] = useState<Error | null>(null);
   const router = useRouter();
@@ -41,6 +51,24 @@ export default function SignIn() {
   const clearError = () => {
     setError(null);
   };
+
+  const fetchUserInfo = async () => {
+    const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const userInfo = await response.json();
+
+    setUser(userInfo);
+  };
+
+  useEffect(() => {
+    if (response?.type === 'success' && response?.authentication?.accessToken) {
+      setAccessToken(response?.authentication?.accessToken);
+      accessToken && fetchUserInfo();
+    }
+  }, [response, accessToken]);
 
   return (
     <>
@@ -75,9 +103,9 @@ export default function SignIn() {
               />
             )}
           />
-
           <Button text="Sign In" onPress={methods.handleSubmit(onSubmit)} isLoading={isLoading} />
         </FormProvider>
+        <Button text="Sign in with Google" onPress={() => promptAsync()} />
         <Text>
           Don't have an account? <CustomLink href={'/sign-up'} text={'Sign Up'} />
         </Text>
