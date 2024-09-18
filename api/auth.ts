@@ -1,6 +1,6 @@
 import { addUserToFirestore } from '@/api/firestore';
 import { RegisterUserProps } from '@/api/types';
-import { auth } from '@/services/firebase.service';
+import { auth } from '@/services';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 export const registerUser = async ({ email, password }: RegisterUserProps) => {
