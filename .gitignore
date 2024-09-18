@@ -15,7 +15,6 @@ app-example/
 components-example/
 .idea/
 .eslintcache
-.credentials
 
 # macOS
 .DS_Store
