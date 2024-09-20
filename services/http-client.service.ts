@@ -1,10 +1,12 @@
+import { API_URL } from '@/api/rest';
+
 interface Options {
   method?: string;
   headers?: RequestInit['headers'];
-  body?: RequestInit['body'];
+  body?: Record<string, any>;
 }
 
-type ResponseData<T> = T extends { data: infer U }
+export type ResponseData<T> = T extends { data: infer U }
   ? {
       data: U;
     }
@@ -35,7 +37,7 @@ export class HttpClientService {
         ...this.defaultHeaders,
         ...headers,
       } as RequestInit['headers'],
-      ...(withBody && { body: bodyObject }),
+      ...(withBody && { body: bodyObject as BodyInit }),
     });
 
     if (!response.ok) {
@@ -55,8 +57,8 @@ export class HttpClientService {
     });
   }
 
-  post<PostResponse>(url: string, body: RequestInit['body'], headers = this.defaultHeaders) {
-    return this.request<PostResponse>(`${this.baseURL}${url}`, {
+  async post<PostResponse>(url: string, body: Record<string, any>, headers = this.defaultHeaders) {
+    return this.request<PostResponse>(`${url}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -66,8 +68,8 @@ export class HttpClientService {
     });
   }
 
-  put<PutResponse>(url: string, body: RequestInit['body'], headers = {}) {
-    return this.request<PutResponse>(`${this.baseURL}${url}`, {
+  async put<PutResponse>(url: string, body: Record<string, any>, headers = {}) {
+    return this.request<PutResponse>(`${url}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -77,15 +79,15 @@ export class HttpClientService {
     });
   }
 
-  delete<DeleteResponse>(url: string, headers = {}) {
-    return this.request<DeleteResponse>(`${this.baseURL}${url}`, {
+  async delete<DeleteResponse>(url: string, headers = {}) {
+    return this.request<DeleteResponse>(`${url}`, {
       method: 'DELETE',
       headers,
     });
   }
 
-  uploadFile<UploadResponse>(url: string, body: Options['body'], headers = {}) {
-    return this.request<UploadResponse>(`${this.baseURL}${url}`, {
+  async uploadFile<UploadResponse>(url: string, body: Options['body'], headers = {}) {
+    return this.request<UploadResponse>(`${url}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -96,7 +98,7 @@ export class HttpClientService {
   }
 }
 
-const httpClient = new HttpClientService('https://api.example.com', {
+const httpClient = new HttpClientService(API_URL, {
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',

@@ -1,12 +1,8 @@
+import { authProvider } from '@/api/constants';
 import { auth as FIREBASE_AUTH } from '@/services/firebase.service';
 import { queryClient } from '@/services/react-query.service';
 import { handleError } from '@/shared';
-import {
-  User,
-  signInWithEmailAndPassword,
-  signOut as firebaseSignOut,
-  onAuthStateChanged,
-} from 'firebase/auth';
+import { User, signOut as firebaseSignOut, onAuthStateChanged } from 'firebase/auth';
 import { useContext, createContext, useState, useEffect, type PropsWithChildren } from 'react';
 
 const AuthContext = createContext<{
@@ -46,7 +42,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
     setIsLoading(true);
 
     try {
-      await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
+      const response = await authProvider['signInUser']({ email, password });
+
+      setUser(response?.data);
     } catch (err) {
       handleError(err);
     } finally {

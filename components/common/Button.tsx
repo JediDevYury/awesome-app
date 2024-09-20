@@ -1,4 +1,3 @@
-import { radius, spacing } from '@/configs/theme';
 import {
   ActivityIndicator,
   GestureResponderEvent,
@@ -62,9 +61,9 @@ const stylesheet = createStyleSheet((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.colors.accent,
-    paddingHorizontal: spacing.m,
+    paddingHorizontal: theme.spacing.m,
     height: 36,
-    borderRadius: radius.s,
+    borderRadius: theme.radius.s,
   },
   text: {
     fontFamily: theme.typography.variant.bold,

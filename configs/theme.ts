@@ -63,6 +63,11 @@ export const defaultStyles = {
     color: colors.gray,
     textDecorationLine: 'underline',
   },
+  text: {
+    fontSize: typography.size.m,
+    fontFamily: typography.variant.regular,
+    color: colors.typography,
+  },
 } as const;
 
 export const hiqoTheme = {

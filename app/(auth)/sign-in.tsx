@@ -31,7 +31,7 @@ export default function SignIn() {
       await signIn(email, password);
 
       if (user) {
-        router.push('/sign-up');
+        router.push('/verification');
       }
     } catch (err) {
       setError(err instanceof Error ? err : new Error('An unknown error occurred'));
