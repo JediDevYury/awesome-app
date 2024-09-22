@@ -8,11 +8,18 @@ import '@/styles/unistyles';
 import { ErrorNotification } from '@/components/common';
 import { AuthProvider, useAuth } from '@/providers/auth.provider';
 import { persister, queryClient } from '@/services/react-query.service';
+import { authStorage } from '@/storage/auth.storage';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
 import { focusManager } from '@tanstack/query-core';
 import { useQueryClient } from '@tanstack/react-query';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import { AppState, AppStateStatus, Platform } from 'react-native';
+
+const fonts = {
+  'FiraSans-Regular': require('../assets/fonts/FiraSans-Regular.ttf'),
+  'FiraSans-SemiBold': require('../assets/fonts/FiraSans-SemiBold.ttf'),
+  'FiraSans-Bold': require('../assets/fonts/FiraSans-Bold.ttf'),
+};
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -23,15 +30,11 @@ export {
 SplashScreen.preventAutoHideAsync();
 
 export function InitialLayout() {
-  const { user, authenticationStatus, signOut } = useAuth();
+  const { user, authenticationStatus, signOut, error: authError } = useAuth();
   const queryClient = useQueryClient();
   const router = useRouter();
   const segments = useSegments();
-  const [loaded, error] = useFonts({
-    'FiraSans-Regular': require('../assets/fonts/FiraSans-Regular.ttf'),
-    'FiraSans-SemiBold': require('../assets/fonts/FiraSans-SemiBold.ttf'),
-    'FiraSans-Bold': require('../assets/fonts/FiraSans-Bold.ttf'),
-  });
+  const [loaded, error] = useFonts(fonts);
   const hideSplashScreen = loaded && !(authenticationStatus === 'loading');
 
   const onAppStateChange = async (status: AppStateStatus) => {
@@ -44,17 +47,21 @@ export function InitialLayout() {
   };
 
   useEffect(() => {
-    if (authenticationStatus === 'loading') return;
-
+    // if (authenticationStatus === 'loading') return;
+    const tokens = authStorage.getItem('tokens');
     const inMainGroup = segments[0] === '(main)';
 
-    if (user && !inMainGroup) {
+    if (tokens) {
       router.replace('/(main)/(tabs)/transactions');
-    } else if (!user && inMainGroup) {
+    }
+
+    if (!tokens && inMainGroup) {
       router.replace('/(auth)/sign-in');
     }
 
-    return queryClient.clear;
+    return () => {
+      queryClient.clear();
+    };
   }, [user, authenticationStatus]);
 
   useEffect(() => {
@@ -71,7 +78,7 @@ export function InitialLayout() {
 
   return (
     <>
-      <ErrorNotification errorMessage={error?.message} />
+      <ErrorNotification errorMessage={error?.message || authError?.message} />
       <Slot />
     </>
   );
