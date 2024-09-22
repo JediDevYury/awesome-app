@@ -1,17 +1,14 @@
 import { Button, CustomLink, Input, Title } from '@/components/common';
-import { ErrorNotification } from '@/components/common';
 import { signInFormSchema, type SignInFormSchema } from '@/forms/schemas';
 import { useAuth } from '@/providers';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Text, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 export default function SignIn() {
   const { styles } = useStyles(stylesheet);
-  const [error, setError] = useState<Error | null>(null);
   const router = useRouter();
 
   const { signIn, isLoading } = useAuth();
@@ -27,21 +24,12 @@ export default function SignIn() {
   const onSubmit: SubmitHandler<SignInFormSchema> = async (formData) => {
     const { email, password } = formData;
 
-    try {
-      await signIn(email, password);
-      router.push('/verification');
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('An unknown error occurred'));
-    }
-  };
-
-  const clearError = () => {
-    setError(null);
+    await signIn(email, password);
+    router.push('/verification');
   };
 
   return (
     <>
-      <ErrorNotification errorMessage={error?.message} clearError={clearError} />
       <View style={styles.container}>
         <Title text="Welcome to Awesome App!" />
         <FormProvider {...methods}>
