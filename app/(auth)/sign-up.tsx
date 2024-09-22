@@ -1,8 +1,9 @@
-import { useRegisterUser } from '@/api/users';
 import { Button, Input, CustomLink, Title } from '@/components/common';
 import { ErrorNotification } from '@/components/common/ErrorNotification';
 import { type SignUpFormSchema, signUpFormSchema } from '@/forms/schemas';
+import { useAuth } from '@/providers';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Text, View } from 'react-native';
@@ -10,7 +11,8 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 export default function SignUp() {
   const [error, setError] = useState<Error | null>(null);
-  const { mutateAsync, isPending } = useRegisterUser();
+  const { createUser, isLoading } = useAuth();
+  const router = useRouter();
 
   const { styles } = useStyles(stylesheet);
 
@@ -28,7 +30,9 @@ export default function SignUp() {
     try {
       const { email, password } = formData;
 
-      await mutateAsync({ email, password });
+      await createUser(email, password);
+
+      router.push('/verification');
     } catch (err) {
       setError(error instanceof Error ? error : new Error('An unknown error occurred'));
     }
@@ -84,7 +88,7 @@ export default function SignUp() {
               />
             )}
           />
-          <Button text="Sign Up" onPress={methods.handleSubmit(onSubmit)} isLoading={isPending} />
+          <Button text="Sign Up" onPress={methods.handleSubmit(onSubmit)} isLoading={isLoading} />
         </FormProvider>
         <Text>
           Already have an account? <CustomLink href={'/'} text={'Sign In'} />

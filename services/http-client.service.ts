@@ -1,4 +1,5 @@
 import { API_URL } from '@/api/rest';
+import { handleError } from '@/shared';
 
 interface Options {
   method?: string;
@@ -31,41 +32,55 @@ export class HttpClientService {
         ? JSON.stringify(body)
         : body;
 
-    const response = await fetch(`${this.baseURL}${url}`, {
-      method,
-      headers: {
-        ...this.defaultHeaders,
-        ...headers,
-      } as RequestInit['headers'],
-      ...(withBody && { body: bodyObject as BodyInit }),
-    });
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const response = await fetch(`${this.baseURL}${url}`, {
+        method,
+        headers: {
+          ...this.defaultHeaders,
+          ...headers,
+        } as RequestInit['headers'],
+        ...(withBody && { body: bodyObject as BodyInit }),
+      });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Error: ${response.status} ${response.statusText} - ${errorText}`);
+      if (!response.ok) {
+        const error = await response.json();
+        const errorMessage = `Error: ${response.status} - ${error.message}`;
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+
+      return { data } as ResponseData<T>;
+    } catch (error) {
+      throw error;
     }
-
-    const data = await response.json();
-
-    return { data } as ResponseData<T>;
   }
 
   async get(url: string, headers = this.defaultHeaders) {
-    return this.request(url, {
-      method: 'GET',
-      headers,
-    });
+    try {
+      return await this.request(url, {
+        method: 'GET',
+        headers,
+      });
+    } catch (error) {
+      handleError(error);
+    }
   }
 
   async post<PostResponse>(url: string, body: Record<string, any>, headers = this.defaultHeaders) {
-    return this.request<PostResponse>(`${url}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...headers,
-      },
-      body,
-    });
+    try {
+      return await this.request<PostResponse>(`${url}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...headers,
+        },
+        body,
+      });
+    } catch (error) {
+      handleError(error);
+    }
   }
 
   async put<PutResponse>(url: string, body: Record<string, any>, headers = {}) {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Image, StyleSheet } from 'react-native';
 
 type QRCodeScreenProps = {
-  uri: string;
+  uri?: string;
   width?: number;
   height?: number;
 };

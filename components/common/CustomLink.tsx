@@ -6,7 +6,7 @@ export function CustomLink({ text, ...props }: LinkProps<string | object> & { te
   const { styles } = useStyles(stylesheet);
 
   return (
-    <Link style={styles.container} {...props}>
+    <Link style={styles.container} {...props} asChild>
       <Text style={styles.text}>{text}</Text>
     </Link>
   );

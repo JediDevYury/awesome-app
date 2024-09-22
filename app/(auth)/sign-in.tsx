@@ -14,7 +14,7 @@ export default function SignIn() {
   const [error, setError] = useState<Error | null>(null);
   const router = useRouter();
 
-  const { signIn, user, isLoading } = useAuth();
+  const { signIn, isLoading } = useAuth();
   const methods = useForm({
     resolver: zodResolver(signInFormSchema),
     defaultValues: {
@@ -29,10 +29,7 @@ export default function SignIn() {
 
     try {
       await signIn(email, password);
-
-      if (user) {
-        router.push('/verification');
-      }
+      router.push('/verification');
     } catch (err) {
       setError(err instanceof Error ? err : new Error('An unknown error occurred'));
     }
@@ -70,8 +67,8 @@ export default function SignIn() {
                 placeholder="Password"
                 value={value}
                 onChangeText={onChange}
-                isPassword
                 errorMessage={error?.message}
+                isPassword
               />
             )}
           />

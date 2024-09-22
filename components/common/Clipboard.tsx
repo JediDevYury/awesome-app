@@ -5,7 +5,7 @@ import { View, Text, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 type ClipboardProps = {
-  text: Partial<string>;
+  text: string | undefined;
   styles?: ViewStyle;
 };
 
@@ -17,6 +17,7 @@ export const Clipboard = ({ text, styles: customStyles }: ClipboardProps) => {
   };
 
   const handleCopyToClipboard = useCallback(async () => {
+    if (!text) return;
     await ClipboardExpo.setStringAsync(text);
   }, []);
 
@@ -25,7 +26,6 @@ export const Clipboard = ({ text, styles: customStyles }: ClipboardProps) => {
   }, []);
 
   useEffect(() => {
-    if (!text) return;
     handleCopyToClipboard();
 
     return () => {

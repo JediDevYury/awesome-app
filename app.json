@@ -34,7 +34,8 @@
             "./assets/fonts/FiraSans-Bold.ttf"
           ]
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true

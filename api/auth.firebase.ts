@@ -2,7 +2,12 @@ import { addUserToFirestore } from '@/api/firestore';
 import { RegisterUserProps } from '@/api/types';
 import { auth as FIREBASE_AUTH, ResponseData } from '@/services';
 import { handleError } from '@/shared';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, User } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  User,
+  signOut as firebaseSignOut,
+} from 'firebase/auth';
 
 export const registerUser = async ({
   email,
@@ -37,7 +42,26 @@ export const signInUser = async ({ email, password }: RegisterUserProps) => {
   }
 };
 
+export const signOut = async () => {
+  try {
+    await firebaseSignOut(FIREBASE_AUTH);
+  } catch (err) {
+    handleError(err);
+  }
+};
+
+export const verify2fa = async (email: string, token: string) => {
+  return Promise.resolve({ data: { email, token } });
+};
+
+export const reset2fa = async (email: string) => {
+  return Promise.resolve({ data: { email } });
+};
+
 export default {
   registerUser,
   signInUser,
+  signOut,
+  verify2fa,
+  reset2fa,
 };
