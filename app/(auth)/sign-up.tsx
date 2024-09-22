@@ -1,16 +1,13 @@
 import { Button, Input, CustomLink, Title } from '@/components/common';
-import { ErrorNotification } from '@/components/common/ErrorNotification';
 import { type SignUpFormSchema, signUpFormSchema } from '@/forms/schemas';
 import { useAuth } from '@/providers';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Text, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 export default function SignUp() {
-  const [error, setError] = useState<Error | null>(null);
   const { createUser, isLoading } = useAuth();
   const router = useRouter();
 
@@ -27,24 +24,13 @@ export default function SignUp() {
   });
 
   const onSubmit: SubmitHandler<SignUpFormSchema> = async (formData) => {
-    try {
-      const { email, password } = formData;
+    await createUser(formData.email, formData.password);
 
-      await createUser(email, password);
-
-      router.push('/verification');
-    } catch (err) {
-      setError(error instanceof Error ? error : new Error('An unknown error occurred'));
-    }
-  };
-
-  const clearError = () => {
-    setError(null);
+    router.push('/verification');
   };
 
   return (
     <>
-      <ErrorNotification errorMessage={error?.message} clearError={clearError} />
       <View style={styles.container}>
         <Title text="Registration Page" />
         <FormProvider {...methods}>
