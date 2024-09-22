@@ -1,18 +1,14 @@
 import { addUserToFirestore } from '@/api/firestore';
 import { RegisterUserProps } from '@/api/types';
-import { auth as FIREBASE_AUTH, ResponseData } from '@/services';
+import { auth as FIREBASE_AUTH } from '@/services';
 import { handleError } from '@/shared';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User,
   signOut as firebaseSignOut,
 } from 'firebase/auth';
 
-export const registerUser = async ({
-  email,
-  password,
-}: RegisterUserProps): Promise<ResponseData<User>> => {
+export const registerUser = async ({ email, password }: RegisterUserProps) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
 
@@ -22,11 +18,7 @@ export const registerUser = async ({
       data: userCredential.user,
     };
   } catch (error) {
-    if (error instanceof Error) {
-      throw error;
-    }
-
-    throw new Error('An unknown error occurred');
+    handleError(error);
   }
 };
 
