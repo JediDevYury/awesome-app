@@ -2,11 +2,14 @@ import { TransactionListItem } from './TransactionListItem';
 import { useCategories } from '@/api/categories';
 import { useTransactions } from '@/api/transactions';
 import { ErrorNotification, Loader } from '@/components/common';
+import { Category, Transaction } from '@/types';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FlatList, TouchableOpacity, View, Text } from 'react-native';
 import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
 
 export function TransactionsList() {
+  const { t } = useTranslation();
   const { styles } = useStyles(stylesheet);
 
   const { categories, error: categoriesError, isLoading: isCategoriesLoading } = useCategories();
@@ -24,7 +27,7 @@ export function TransactionsList() {
   const errorMessage = categoriesError?.message || transactionsError?.message;
 
   const getCategory = useMemo(
-    () => (id: string) => categories?.find((category) => category.id === id),
+    () => (id: string) => categories?.find((category: Category) => category.id === id),
     [categories],
   );
 
@@ -39,7 +42,15 @@ export function TransactionsList() {
   if (!categories?.length) {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>No categories available.</Text>
+        <Text style={styles.text}>{t('transactions.no-categories')}</Text>
+      </View>
+    );
+  }
+
+  if (!transactions?.length) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>{t('transactions.no-transactions')}</Text>
       </View>
     );
   }
@@ -49,7 +60,7 @@ export function TransactionsList() {
       <ErrorNotification errorMessage={errorMessage} />
       <FlatList
         data={transactions}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item: Transaction) => item.id}
         contentContainerStyle={styles.flatListContainer}
         contentInsetAdjustmentBehavior={'automatic'}
         renderItem={({ item }) => {
@@ -64,11 +75,6 @@ export function TransactionsList() {
         ListFooterComponent={
           <View style={styles.footer(hasNextPage)}>
             <Loader loading={isFetchingNextPage} />
-          </View>
-        }
-        ListEmptyComponent={
-          <View style={styles.container}>
-            <Text style={styles.text}>No transactions available.</Text>
           </View>
         }
       />

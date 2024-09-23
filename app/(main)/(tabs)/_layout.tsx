@@ -1,9 +1,11 @@
 import { FontAwesome } from '@expo/vector-icons';
 
 import { Tabs } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { useStyles } from 'react-native-unistyles';
 
 export default function TabLayout() {
+  const { t } = useTranslation();
   const { theme } = useStyles();
 
   return (
@@ -11,7 +13,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="transactions"
         options={{
-          title: 'Transactions',
+          headerShown: false,
+          title: t('tabs.title.transactions'),
           tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
         }}
       />
@@ -19,7 +22,7 @@ export default function TabLayout() {
         name="settings"
         options={{
           headerShown: false,
-          title: 'Settings',
+          title: t('tabs.title.settings'),
           tabBarIcon: ({ color }) => <FontAwesome size={28} name="cog" color={color} />,
         }}
       />

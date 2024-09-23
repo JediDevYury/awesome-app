@@ -1,20 +1,15 @@
-import { Button, SegmentedControl } from '@/components/common';
-import HeaderBar from '@/components/common/HeaderBar';
+import { Button } from '@/components/common';
 import { useAuth } from '@/providers';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
-import { createStyleSheet, useStyles } from 'react-native-unistyles';
-
-// TODO: Add a segmented control into settings page for test
+import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
 
 export default function Settings() {
+  const { t } = useTranslation();
   const { styles } = useStyles(stylesheet);
   const { signOut } = useAuth();
   const router = useRouter();
-  const options = ['Income', 'Expense'];
-
-  const [selectedOption, setSelectedOption] = useState('Income');
 
   const handleSignOut = async () => {
     await signOut();
@@ -24,20 +19,17 @@ export default function Settings() {
 
   return (
     <View style={styles.container}>
-      <HeaderBar />
-      <SegmentedControl
-        selectedOption={selectedOption}
-        options={options}
-        onOptionPress={setSelectedOption}
-      />
-      <Button text="Sign Out" onPress={handleSignOut} />
+      <Button text={t('components.button.sign-out')} onPress={handleSignOut} />
     </View>
   );
 }
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
+    paddingHorizontal: theme.spacing.m,
+    paddingTop: UnistylesRuntime.insets.top * 2,
     ...theme.defaultStyles.container,
+    justifyContent: 'flex-start',
     backgroundColor: theme.colors.background,
   },
   text: {

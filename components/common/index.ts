@@ -8,3 +8,4 @@ export * from './Chip';
 export * from './ErrorNotification';
 export * from './SegmentedControl';
 export * from './Clipboard';
+export * from './LanguageSwitcher';

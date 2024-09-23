@@ -4,10 +4,12 @@ import { useAuth } from '@/providers';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 export default function SignUp() {
+  const { t } = useTranslation();
   const { createUser, isLoading } = useAuth();
   const router = useRouter();
 
@@ -32,14 +34,14 @@ export default function SignUp() {
   return (
     <>
       <View style={styles.container}>
-        <Title text="Registration Page" />
+        <Title text={t('sign-up.title')} />
         <FormProvider {...methods}>
           <Controller
             name="email"
             control={methods.control}
             render={({ field: { onChange, value }, fieldState: { error } }) => (
               <Input
-                placeholder="Email"
+                placeholder={t('components.form.email')}
                 value={value}
                 onChangeText={onChange}
                 keyboardType="email-address"
@@ -53,7 +55,7 @@ export default function SignUp() {
             control={methods.control}
             render={({ field: { onChange, value }, fieldState: { error } }) => (
               <Input
-                placeholder="Password"
+                placeholder={t('components.form.password')}
                 value={value}
                 onChangeText={onChange}
                 errorMessage={error?.message}
@@ -66,7 +68,7 @@ export default function SignUp() {
             control={methods.control}
             render={({ field: { onChange, value }, fieldState: { error } }) => (
               <Input
-                placeholder="Confirm Password"
+                placeholder={t('components.form.confirm-password')}
                 value={value}
                 onChangeText={onChange}
                 errorMessage={error?.message}
@@ -74,10 +76,15 @@ export default function SignUp() {
               />
             )}
           />
-          <Button text="Sign Up" onPress={methods.handleSubmit(onSubmit)} isLoading={isLoading} />
+          <Button
+            text={t('components.button.sign-up')}
+            onPress={methods.handleSubmit(onSubmit)}
+            isLoading={isLoading}
+          />
         </FormProvider>
         <Text>
-          Already have an account? <CustomLink href={'/'} text={'Sign In'} />
+          {t('sign-up.already-account')}{' '}
+          <CustomLink href={'/'} text={t('components.link.sign-in')} />
         </Text>
       </View>
     </>

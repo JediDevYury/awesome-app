@@ -1,1 +1,1 @@
-export const FIELD_REQUIRED = 'This field is required';
+export const FIELD_REQUIRED = 'validation.email.required';
