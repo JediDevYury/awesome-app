@@ -3,6 +3,7 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect } from 'react';
 
+import '@/services/i18n.service';
 import '@/styles/unistyles';
 
 import { ErrorNotification } from '@/components/common';
@@ -47,7 +48,6 @@ export function InitialLayout() {
   };
 
   useEffect(() => {
-    // if (authenticationStatus === 'loading') return;
     const tokens = authStorage.getItem('tokens');
     const inMainGroup = segments[0] === '(main)';
 

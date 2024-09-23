@@ -1,0 +1,79 @@
+{
+  "sign-in": {
+    "title": "Bienvenue sur Awesome App!",
+    "no-account": "Vous n'avez pas de compte?"
+  },
+  "sign-up": {
+    "title": "Créer un compte",
+    "already-account": "Vous avez déjà un compte?"
+  },
+  "transactions": {
+    "no-categories": "Aucune catégorie trouvée",
+    "no-transactions": "Aucune transaction trouvée",
+    "transaction": {
+      "title": "Transaction",
+      "amount": "Montant",
+      "category": "Catégorie",
+      "description": "Description",
+      "number": "Numéro de transaction",
+      "type": "Type",
+      "types": {
+        "income": "Revenu",
+        "expense": "Dépense"
+      },
+      "no-category": "Catégorie non trouvée"
+    }
+  },
+  "tabs": {
+    "title": {
+      "transactions": "Transactions",
+      "settings": "Paramètres"
+    }
+  },
+  "verification": {
+    "title": "Vérifiez votre compte",
+    "description": "Veuillez entrer le code de vérification à 6 chiffres depuis Google Authenticator (ou toute autre application OTP Authenticator)",
+    "secret": "Secret de vérification"
+  },
+  "components": {
+    "language-switcher": {
+      "title": "Choisissez une langue"
+    },
+    "button": {
+      "sign-up": "S'inscrire",
+      "sign-in": "Se connecter",
+      "sign-out": "Se déconnecter",
+      "reset-verification": "Réinitialiser la vérification en deux étapes",
+      "copy-to-clipboard": "Copier dans le presse-papiers"
+    },
+    "link": {
+      "sign-up": "S'inscrire",
+      "sign-in": "Se connecter"
+    },
+    "form": {
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "confirm-password": "Confirmer le mot de passe"
+    }
+  },
+  "validation": {
+    "password": {
+      "string": "Le mot de passe doit être une chaîne de caractères",
+      "required": "Ce champ est requis",
+      "min": "Le mot de passe doit comporter au moins 8 caractères",
+      "max": "Le mot de passe ne doit pas dépasser 32 caractères",
+      "confirm": "Les mots de passe ne correspondent pas",
+      "regex": {
+        "lowercase": "Le mot de passe doit contenir au moins une lettre minuscule",
+        "uppercase": "Le mot de passe doit contenir au moins une lettre majuscule",
+        "number": "Le mot de passe doit contenir au moins un chiffre",
+        "special": "Le mot de passe doit contenir au moins un caractère spécial (@$!%*?&)"
+      }
+    },
+    "email": {
+      "string": "L'e-mail doit être une chaîne de caractères",
+      "required": "Ce champ est requis",
+      "invalid": "Format d'e-mail invalide"
+    }
+  }
+}

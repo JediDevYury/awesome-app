@@ -1,6 +1,7 @@
 import { Button } from './Button';
 import * as ClipboardExpo from 'expo-clipboard';
 import { useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, ViewStyle } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -10,6 +11,7 @@ type ClipboardProps = {
 };
 
 export const Clipboard = ({ text, styles: customStyles }: ClipboardProps) => {
+  const { t } = useTranslation();
   const { styles } = useStyles(stylesheets);
 
   const copyToClipboard = async () => {
@@ -35,9 +37,9 @@ export const Clipboard = ({ text, styles: customStyles }: ClipboardProps) => {
 
   return (
     <View style={[styles.container, customStyles]}>
-      <Button text="Click here to copy to Clipboard" onPress={copyToClipboard} />
+      <Button text={t('components.button.copy-to-clipboard')} onPress={copyToClipboard} />
       <View style={styles.textContainer}>
-        <Text style={styles.copiedText}>{`Verification Secret: ${text}`}</Text>
+        <Text style={styles.copiedText}>{`${t('verification.secret')}: ${text}`}</Text>
       </View>
     </View>
   );

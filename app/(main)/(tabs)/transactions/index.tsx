@@ -1,7 +1,5 @@
 import { TransactionsList } from './components/TransactionsList';
 import { Ionicons } from '@expo/vector-icons';
-//TODO: should be added when the create transaction modal is implemented '/(main)/(modals)/create-transaction'
-// import { Link } from 'expo-router';
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { createStyleSheet, useStyles, UnistylesRuntime } from 'react-native-unistyles';

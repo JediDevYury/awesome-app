@@ -5,6 +5,7 @@ import { authStorage } from '@/storage/auth.storage';
 import { FontAwesome } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, KeyboardAvoidingView, Platform } from 'react-native';
 import {
   CodeField,
@@ -17,6 +18,7 @@ import { createStyleSheet, useStyles, UnistylesRuntime } from 'react-native-unis
 const CELL_COUNT = 6;
 
 export default function Verification() {
+  const { t } = useTranslation();
   const { verification, reset2fa, verify2fa } = useAuth();
   const router = useRouter();
   const isActiveUser = verification && !verification['qrCode'];
@@ -64,17 +66,14 @@ export default function Verification() {
             style={{
               marginTop: 20,
             }}
-            text="Verification"
+            text={t('verification.title')}
           />
           <Link style={styles.arrowBackIcon} href={'/(auth)/sign-in'} asChild replace>
             <FontAwesome name="chevron-left" size={24} color="black" />
           </Link>
         </View>
         <View style={styles.bodyWrapper}>
-          <Text style={styles.description}>
-            Please enter the 6-digit verification code from Google Authenticator (or any other OTP
-            Authenticator app):
-          </Text>
+          <Text style={styles.description}>{`${t('verification.description')}:`}</Text>
           <CodeField
             ref={ref}
             {...props}
@@ -96,7 +95,7 @@ export default function Verification() {
           />
           <View style={styles.controlsWrapper}>
             {isActiveUser ? (
-              <Button text={'Reset to step verification'} onPress={handleReset2fa} />
+              <Button text={t('components.button.reset-verification')} onPress={handleReset2fa} />
             ) : (
               <>
                 <QRCodeScreen width={150} height={150} uri={verification?.qrCode} />

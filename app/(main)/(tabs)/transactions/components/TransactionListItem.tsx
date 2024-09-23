@@ -4,6 +4,7 @@ import { CategoryColors, CategoryEmojies } from '@/shared';
 import { Category, CategoryType, Transaction } from '@/types';
 import { GetKeys } from '@/types/generics';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Platform, View, Text } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -13,12 +14,15 @@ type TransactionListItemProps = {
 };
 
 export const TransactionListItem = ({ transaction, category }: TransactionListItemProps) => {
+  const { t } = useTranslation();
   const { styles } = useStyles(stylesheets);
 
   if (!category) {
     return (
       <Card style={styles.card}>
-        <Text style={styles.text('semiBold', 'l')}>Category not found</Text>
+        <Text style={styles.text('semiBold', 'l')}>
+          {t('transactions.transaction.no-category')}
+        </Text>
       </Card>
     );
   }
@@ -48,7 +52,7 @@ export const TransactionListItem = ({ transaction, category }: TransactionListIt
         <View style={styles.transactionColumn}>
           <Text style={styles.text('semiBold', 'l')}>{transaction.description}</Text>
           <Text style={styles.text('regular', 'm', 'gray')}>
-            Transaction number {transaction.id}
+            {`${t('transactions.transaction.number')}:`} {transaction.id}
           </Text>
           <Text style={styles.text('semiBold', 'm', 'accent')}>
             {new Date(transaction.date).toDateString()}

@@ -1,0 +1,79 @@
+{
+  "sign-in": {
+    "title": "Welcome to Awesome App!",
+    "no-account": "Don't have an account?"
+  },
+  "sign-up": {
+    "title": "Create an account",
+    "already-account": "Already have an account?"
+  },
+  "transactions": {
+    "no-categories": "No categories found",
+    "no-transactions": "No transactions found",
+    "transaction": {
+      "title": "Transaction",
+      "amount": "Amount",
+      "category": "Category",
+      "description": "Description",
+      "number": "Transaction number",
+      "type": "Type",
+      "types": {
+        "income": "Income",
+        "expense": "Expense"
+      },
+      "no-category": "Category not found"
+    }
+  },
+  "tabs": {
+    "title": {
+      "transactions": "Transactions",
+      "settings": "Settings"
+    }
+  },
+  "verification": {
+    "title": "Verify your account",
+    "description": "Please enter the 6-digit verification code from Google Authenticator (or any other OTP Authenticator app)",
+    "secret": "Verification Secret"
+  },
+  "components": {
+    "language-switcher": {
+      "title": "Choose a Language"
+    },
+    "button": {
+      "sign-up": "Sign Up",
+      "sign-in": "Sign In",
+      "sign-out": "Sign Out",
+      "reset-verification": "Reset to step verification",
+      "copy-to-clipboard": "Copy to clipboard"
+    },
+    "link": {
+      "sign-up": "Sign Up",
+      "sign-in": "Sign In"
+    },
+    "form": {
+      "email": "E-mail",
+      "password": "Password",
+      "confirm-password": "Confirm Password"
+    }
+  },
+  "validation": {
+    "password": {
+      "string": "Password must be a string",
+      "required": "This field is required",
+      "min": "Password must be at least 8 characters long",
+      "max": "Password must not exceed 32 characters",
+      "confirm": "Passwords do not match",
+      "regex": {
+        "lowercase": "Password must contain at least one lowercase letter",
+        "uppercase": "Password must contain at least one uppercase letter",
+        "number": "Password must contain at least one number",
+        "special": "Password must contain at least one special character (@$!%*?&)"
+      }
+    },
+    "email": {
+      "string": "E-mail must be a string",
+      "required": "This field is required",
+      "invalid": "Invalid e-mail format"
+    }
+  }
+}
