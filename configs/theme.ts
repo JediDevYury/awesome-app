@@ -69,6 +69,13 @@ export const defaultStyles = {
     fontFamily: typography.variant.regular,
     color: colors.typography,
   },
+  skeleton: {
+    colorMode: 'light',
+    transition: {
+      type: 'timing',
+      duration: 2000,
+    },
+  },
 } as const;
 
 export const hiqoTheme = {

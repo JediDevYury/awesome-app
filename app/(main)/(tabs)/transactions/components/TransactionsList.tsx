@@ -1,17 +1,26 @@
 import { TransactionListItem } from './TransactionListItem';
-import { Loader, Title } from '@/components/common';
+import { Loader } from '@/components/common';
 // import { ErrorNotification, Loader } from '@/components/common';
 import { Transaction, TransactionWithCategory } from '@/types';
-import React from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, TouchableOpacity, View, Text } from 'react-native';
+import { FlatList, TouchableOpacity, View, Text, RefreshControl } from 'react-native';
 import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
 
 type TransactionsListProps = { transactions: TransactionWithCategory[]; isLoading: boolean };
 
 export function TransactionsList({ transactions, isLoading }: TransactionsListProps) {
   const { t } = useTranslation();
-  const { styles } = useStyles(stylesheet);
+  const [refreshing, setRefreshing] = useState(false);
+  const { styles, theme } = useStyles(stylesheet);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 500);
+  }, []);
 
   if (isLoading) {
     return <Loader loading={isLoading} />;
@@ -31,13 +40,9 @@ export function TransactionsList({ transactions, isLoading }: TransactionsListPr
       <FlatList
         data={transactions}
         keyExtractor={(item: Transaction) => item.id.toString()}
-        ListHeaderComponent={
-          <View style={styles.header}>
-            <Title text={t('tabs.title.transactions')} />
-          </View>
-        }
         contentContainerStyle={styles.flatListContainer}
         contentInsetAdjustmentBehavior={'automatic'}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
           return (
             <TouchableOpacity activeOpacity={0.7}>
@@ -45,6 +50,14 @@ export function TransactionsList({ transactions, isLoading }: TransactionsListPr
             </TouchableOpacity>
           );
         }}
+        refreshControl={
+          <RefreshControl
+            tintColor={theme.colors.accent}
+            colors={[theme.colors.accent]}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
         scrollEventThrottle={16}
         // onEndReached={loadMoreTransactions}
         // ListFooterComponent={
@@ -66,19 +79,18 @@ const stylesheet = createStyleSheet((theme) => ({
     paddingTop: UnistylesRuntime.insets.top,
     paddingBottom: UnistylesRuntime.insets.bottom,
   },
-  header: {
-    alignItems: 'center',
-    paddingBottom: 8,
-  },
   flatListContainer: {
     paddingHorizontal: theme.spacing.s,
-    paddingTop: 20,
+    paddingTop: 10,
     paddingBottom: 20,
   },
   text: {
     color: theme.colors.typography,
     fontSize: theme.typography.size.l,
     fontFamily: theme.typography.variant.semiBold,
+  },
+  refreshControl: {
+    color: theme.colors.accent,
   },
   footer: (hasNextPage: boolean) => ({
     position: 'relative',

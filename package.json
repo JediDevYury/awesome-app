@@ -4,7 +4,6 @@
   "version": "1.0.0",
   "scripts": {
     "prebuild": "expo prebuild --clean",
-    "reset-project": "node ./scripts/reset-project.js",
     "start:android": "expo run:android --port=8082",
     "start:ios": "expo run:ios --port=8081",
     "start:web": "expo start --web",
@@ -22,10 +21,7 @@
     "@expo/vector-icons": "^14.0.2",
     "@hookform/resolvers": "^3.9.0",
     "@react-native-async-storage/async-storage": "1.23.1",
-    "@tanstack/query-async-storage-persister": "^5.51.21",
-    "@tanstack/query-sync-storage-persister": "^5.51.21",
     "@tanstack/react-query": "^5.51.21",
-    "@tanstack/react-query-persist-client": "^5.51.21",
     "dotenv": "^16.4.5",
     "expo": "~51.0.28",
     "expo-asset": "~10.0.10",
@@ -36,6 +32,7 @@
     "expo-file-system": "~17.0.1",
     "expo-font": "~12.0.9",
     "expo-image-picker": "^15.0.7",
+    "expo-linear-gradient": "^13.0.2",
     "expo-linking": "~6.3.1",
     "expo-localization": "~15.0.3",
     "expo-router": "~3.5.23",
@@ -48,6 +45,7 @@
     "firebase": "^10.12.4",
     "i18next": "^23.15.1",
     "lz-string": "^1.5.0",
+    "moti": "^0.29.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.53.0",
@@ -64,8 +62,7 @@
     "react-native-unistyles": "^2.9.1",
     "react-native-web": "~0.19.10",
     "zod": "^3.23.8",
-    "@react-native-community/netinfo": "11.3.1",
-    "expo-dev-client": "~4.0.26"
+    "@react-native-community/netinfo": "11.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

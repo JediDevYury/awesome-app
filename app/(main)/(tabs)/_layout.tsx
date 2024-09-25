@@ -13,9 +13,13 @@ export default function TabLayout() {
       <Tabs.Screen
         name="transactions"
         options={{
-          headerShown: false,
           title: t('tabs.title.transactions'),
           tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
+          headerTitleStyle: {
+            color: theme.colors.typography,
+            fontSize: theme.typography.size.xxl,
+            fontFamily: theme.typography.variant.semiBold,
+          },
         }}
       />
       <Tabs.Screen
