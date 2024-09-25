@@ -1,15 +1,72 @@
 import { TransactionsList } from './components/TransactionsList';
+import { Category, Transaction } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import { useSQLiteContext } from 'expo-sqlite';
+import React, { useEffect, useMemo, useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { createStyleSheet, useStyles, UnistylesRuntime } from 'react-native-unistyles';
 
 export default function Transactions() {
+  const db = useSQLiteContext();
   const { styles } = useStyles(stylesheet);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isTransactionsLoading, setIsTransactionsLoading] = useState(true);
+
+  const getTransaction = async () => {
+    setIsTransactionsLoading(true);
+
+    try {
+      const result = await db.getAllAsync<Transaction>(
+        `SELECT * FROM Transactions 
+       ORDER BY date DESC
+       LIMIT 25;`,
+      );
+
+      setTransactions(result);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsTransactionsLoading(false);
+    }
+  };
+
+  const getCategories = async () => {
+    const result = await db.getAllAsync<Category>(`SELECT * FROM Categories;`);
+    setCategories(result);
+  };
+
+  // const updateTransactionCategoryId = async (transactionId: number, categoryId: number) => {
+  //   await db.runAsync('UPDATE Transactions SET category_id = ? WHERE id = ?', [
+  //     categoryId,
+  //     transactionId,
+  //   ]);
+  // };
+
+  const transactionsWithCategories = useMemo(() => {
+    return transactions.map((transaction) => {
+      const category = categories.find((category) => {
+        return category.id === transaction.category_id;
+      });
+      return { ...transaction, category };
+    });
+  }, [transactions, categories]);
+
+  useEffect(() => {
+    getCategories();
+  }, []);
+
+  useEffect(() => {
+    if (categories.length) return;
+    getTransaction();
+  }, [categories]);
 
   return (
     <View style={styles.container}>
-      <TransactionsList />
+      <TransactionsList
+        transactions={transactionsWithCategories}
+        isLoading={isTransactionsLoading}
+      />
       <TouchableOpacity style={styles.FAB} activeOpacity={0.7}>
         <Ionicons name="add" size={24} color="white" />
       </TouchableOpacity>

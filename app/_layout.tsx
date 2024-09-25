@@ -1,4 +1,3 @@
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect } from 'react';
@@ -7,14 +6,16 @@ import '@/services/i18n.service';
 import '@/styles/unistyles';
 
 import { ErrorNotification } from '@/components/common';
+import { NetConnectionIndicator } from '@/components/common';
 import { AuthProvider, useAuth } from '@/providers/auth.provider';
-import { persister, queryClient } from '@/services/react-query.service';
+import { queryClient } from '@/services/react-query.service';
 import { authStorage } from '@/storage/auth.storage';
-import { useReactQueryDevTools } from '@dev-plugins/react-query';
 import { focusManager } from '@tanstack/query-core';
-import { useQueryClient } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { Slot, useRouter, useSegments } from 'expo-router';
-import { AppState, AppStateStatus, Platform } from 'react-native';
+import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
+import { Alert, AppState, AppStateStatus, Platform } from 'react-native';
 
 const fonts = {
   'FiraSans-Regular': require('../assets/fonts/FiraSans-Regular.ttf'),
@@ -31,11 +32,12 @@ export {
 SplashScreen.preventAutoHideAsync();
 
 export function InitialLayout() {
+  const db = useSQLiteContext();
+  useDrizzleStudio(db);
   const { user, authenticationStatus, signOut, error: authError } = useAuth();
-  const queryClient = useQueryClient();
   const router = useRouter();
   const segments = useSegments();
-  const [loaded, error] = useFonts(fonts);
+  const [loaded, fontLoadingError] = useFonts(fonts);
   const hideSplashScreen = loaded && !(authenticationStatus === 'loading');
 
   const onAppStateChange = async (status: AppStateStatus) => {
@@ -49,6 +51,11 @@ export function InitialLayout() {
 
   useEffect(() => {
     const tokens = authStorage.getItem('tokens');
+
+    if (!tokens) {
+      Alert.alert('No tokens found');
+    }
+
     const inMainGroup = segments[0] === '(main)';
 
     if (tokens) {
@@ -78,21 +85,25 @@ export function InitialLayout() {
 
   return (
     <>
-      <ErrorNotification errorMessage={error?.message || authError?.message} />
+      <ErrorNotification errorMessage={fontLoadingError?.message || authError?.message} />
       <Slot />
+      <NetConnectionIndicator />
     </>
   );
 }
 
 function RootLayoutNav() {
-  useReactQueryDevTools(queryClient);
-
   return (
-    <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
+    <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <InitialLayout />
+        <SQLiteProvider
+          databaseName="mySQLiteDB"
+          assetSource={{ assetId: require('../assets/mySQLiteDB.db') }}
+        >
+          <InitialLayout />
+        </SQLiteProvider>
       </AuthProvider>
-    </PersistQueryClientProvider>
+    </QueryClientProvider>
   );
 }
 

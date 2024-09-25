@@ -1,7 +1,13 @@
+import { Category } from '@/types';
+
 export interface Transaction {
-  id: string;
+  id: number;
   amount: number;
   date: string;
   description: string;
-  categoryId: string;
+  category_id: string;
+}
+
+export interface TransactionWithCategory extends Transaction {
+  category: Category | undefined;
 }

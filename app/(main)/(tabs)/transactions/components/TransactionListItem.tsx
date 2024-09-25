@@ -27,15 +27,16 @@ export const TransactionListItem = ({ transaction, category }: TransactionListIt
     );
   }
 
-  const color = category.type === CategoryType.Income ? 'green' : 'red';
-
   return (
     <Card style={styles.card}>
       <View style={styles.container}>
         <View style={styles.categoryColumn}>
-          <Amount color={color} amount={transaction.amount}>
+          <Amount
+            color={category.type === CategoryType.Income ? 'green' : 'red'}
+            amount={transaction.amount}
+          >
             <Ionicons
-              color={color}
+              color={category.type === CategoryType.Income ? 'green' : 'red'}
               name={category.type === CategoryType.Income ? 'add-circle' : 'remove-circle'}
               size={24}
               style={styles.icon}
@@ -55,7 +56,7 @@ export const TransactionListItem = ({ transaction, category }: TransactionListIt
             {`${t('transactions.transaction.number')}:`} {transaction.id}
           </Text>
           <Text style={styles.text('semiBold', 'm', 'accent')}>
-            {new Date(transaction.date).toDateString()}
+            {new Date(Number(transaction.date) * 1000).toDateString()}
           </Text>
         </View>
       </View>
