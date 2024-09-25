@@ -33,6 +33,7 @@ export const colors = {
   white: 'rgb(255, 255, 255)',
   black: 'rgb(0, 0, 0)',
   gray: 'rgb(128, 128, 128)',
+  green: 'rgb(0, 128, 0)',
 } as const;
 
 export const radius = {
