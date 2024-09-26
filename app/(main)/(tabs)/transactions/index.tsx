@@ -1,47 +1,51 @@
+import { TransactionSummary } from './components/TransactionSummary';
 import { TransactionsList } from './components/TransactionsList';
-import { Category, Transaction } from '@/types';
+import { ErrorNotification } from '@/components/common';
+import { sqliteDB } from '@/services';
+import { Category, Transaction, TransactionsByMonth } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import { useSQLiteContext } from 'expo-sqlite';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { createStyleSheet, useStyles, UnistylesRuntime } from 'react-native-unistyles';
 
 export default function Transactions() {
-  const db = useSQLiteContext();
   const { styles } = useStyles(stylesheet);
+  const db = useSQLiteContext();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string>();
   const [isTransactionsLoading, setIsTransactionsLoading] = useState(true);
+  const [transactionsByMonth, setTransactionsByMonth] = useState<TransactionsByMonth>({
+    totalIncome: 0,
+    totalExpenses: 0,
+  });
 
   const getTransaction = async () => {
     setIsTransactionsLoading(true);
 
     try {
-      const result = await db.getAllAsync<Transaction>(
-        `SELECT * FROM Transactions 
-       ORDER BY date DESC
-       LIMIT 25;`,
-      );
+      const [categories, transactions] = await Promise.all([
+        sqliteDB.getCategories(),
+        sqliteDB.getTransactions({ limit: 10, order: 'ASC' }),
+      ]);
 
-      setTransactions(result);
+      setCategories(categories);
+      setTransactions(transactions);
+
+      const transactionsByMonth = await sqliteDB.getTransactionsByMonth();
+
+      setTransactionsByMonth(transactionsByMonth);
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) {
+        setErrorMessage(error.message || 'An error occurred');
+      } else {
+        throw error;
+      }
     } finally {
       setIsTransactionsLoading(false);
     }
   };
-
-  const getCategories = async () => {
-    const result = await db.getAllAsync<Category>(`SELECT * FROM Categories;`);
-    setCategories(result);
-  };
-
-  // const updateTransactionCategoryId = async (transactionId: number, categoryId: number) => {
-  //   await db.runAsync('UPDATE Transactions SET category_id = ? WHERE id = ?', [
-  //     categoryId,
-  //     transactionId,
-  //   ]);
-  // };
 
   const transactionsWithCategories = useMemo(() => {
     return transactions.map((transaction) => {
@@ -53,24 +57,28 @@ export default function Transactions() {
   }, [transactions, categories]);
 
   useEffect(() => {
-    getCategories();
-  }, []);
-
-  useEffect(() => {
-    if (categories.length) return;
-    getTransaction();
-  }, [categories]);
+    db.withTransactionAsync(async () => {
+      await getTransaction();
+    });
+  }, [db]);
 
   return (
-    <View style={styles.container}>
-      <TransactionsList
-        transactions={transactionsWithCategories}
-        isLoading={isTransactionsLoading}
-      />
-      <TouchableOpacity style={styles.FAB} activeOpacity={0.7}>
-        <Ionicons name="add" size={24} color="white" />
-      </TouchableOpacity>
-    </View>
+    <>
+      <ErrorNotification errorMessage={errorMessage} />
+      <View style={styles.container}>
+        <TransactionSummary
+          transactionsByMonth={transactionsByMonth}
+          isLoading={isTransactionsLoading}
+        />
+        <TransactionsList
+          transactions={transactionsWithCategories}
+          isLoading={isTransactionsLoading}
+        />
+        <TouchableOpacity style={styles.FAB} activeOpacity={0.7}>
+          <Ionicons name="add" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+    </>
   );
 }
 

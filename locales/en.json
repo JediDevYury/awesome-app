@@ -10,6 +10,12 @@
   "transactions": {
     "no-categories": "No categories found",
     "no-transactions": "No transactions found",
+    "month-summary": {
+      "title": "Summary for",
+      "income": "Income",
+      "expenses": "Expense",
+      "savings": "Balance"
+    },
     "transaction": {
       "title": "Transaction",
       "amount": "Amount",

@@ -1,11 +1,11 @@
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 
 import '@/services/i18n.service';
 import '@/styles/unistyles';
 
-import { ErrorNotification } from '@/components/common';
+import { ErrorNotification, Loader } from '@/components/common';
 import { NetConnectionIndicator } from '@/components/common';
 import { AuthProvider, useAuth } from '@/providers/auth.provider';
 import { queryClient } from '@/services/react-query.service';
@@ -15,7 +15,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
-import { Alert, AppState, AppStateStatus, Platform } from 'react-native';
+import { AppState, AppStateStatus, Platform } from 'react-native';
 
 const fonts = {
   'FiraSans-Regular': require('../assets/fonts/FiraSans-Regular.ttf'),
@@ -50,12 +50,7 @@ export function InitialLayout() {
   };
 
   useEffect(() => {
-    const tokens = authStorage.getItem('tokens');
-
-    if (!tokens) {
-      Alert.alert('No tokens found');
-    }
-
+    const tokens = authStorage.getItem('tokens') || null;
     const inMainGroup = segments[0] === '(main)';
 
     if (tokens) {
@@ -96,12 +91,15 @@ function RootLayoutNav() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <SQLiteProvider
-          databaseName="mySQLiteDB"
-          assetSource={{ assetId: require('../assets/mySQLiteDB.db') }}
-        >
-          <InitialLayout />
-        </SQLiteProvider>
+        <Suspense fallback={<Loader loading={true} />}>
+          <SQLiteProvider
+            databaseName="mySQLiteDB"
+            assetSource={{ assetId: require('../assets/mySQLiteDB.db') }}
+            useSuspense
+          >
+            <InitialLayout />
+          </SQLiteProvider>
+        </Suspense>
       </AuthProvider>
     </QueryClientProvider>
   );
