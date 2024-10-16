@@ -2,11 +2,12 @@ import CategoriesList from './components/CategoryList';
 
 import { Input, SegmentedControl, Title, Button } from '@/components/common';
 import DateTimePicker from '@/components/common/DateTimePicker/DateTimePicker';
-import { createTransactionSchema } from '@/forms/schemas';
+import { CreateTransactionSchema, createTransactionSchema } from '@/forms/schemas';
+import { CategoryType } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'expo-router';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { View, Platform, TouchableOpacity } from 'react-native';
 import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
 
@@ -16,7 +17,7 @@ function CreateTransaction() {
   const methods = useForm({
     resolver: zodResolver(createTransactionSchema),
     defaultValues: {
-      type: 'Expense',
+      type: CategoryType.Expense,
       amount: '',
       date: new Date(),
       time: new Date(),
@@ -25,6 +26,11 @@ function CreateTransaction() {
     },
     mode: 'onBlur',
   });
+
+  const onSubmit: SubmitHandler<CreateTransactionSchema> = async (formData) => {
+    //TODO: Create transaction into SQLite database
+    console.log(formData);
+  };
 
   return (
     <View style={styles.container}>
@@ -92,10 +98,7 @@ function CreateTransaction() {
       <Button
         text={'Create Transaction'}
         style={styles.createTransactionButton}
-        onPress={methods.handleSubmit((data) => {
-          // TODO: Create transaction into SQLite database
-          console.log(data);
-        })}
+        onPress={methods.handleSubmit(onSubmit)}
       />
     </View>
   );
