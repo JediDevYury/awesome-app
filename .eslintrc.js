@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-undef
 module.exports = {
-  plugins: ['prettier', 'react', 'react-native'],
+  plugins: ['prettier', 'react', 'react-native', 'expo'],
   extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
   rules: {
     'sort-imports': 'off',

@@ -49,14 +49,15 @@ export function Input({ isPassword, style, inputStyle, errorMessage, ...props }:
 const stylesheet = createStyleSheet((theme) => ({
   container: {
     marginTop: theme.spacing.xs,
+    paddingHorizontal: theme.spacing.s,
+    paddingVertical: Platform.select({ ios: theme.spacing.s, android: 0 }),
+    justifyContent: 'center',
     position: 'relative',
     width: '100%',
     borderWidth: 1,
     borderColor: theme.colors.accent,
     borderRadius: theme.radius.s,
     height: 36,
-    paddingHorizontal: theme.spacing.s,
-    paddingVertical: Platform.select({ ios: theme.spacing.s, android: 0 }),
     backgroundColor: theme.colors.white,
   },
   input: {

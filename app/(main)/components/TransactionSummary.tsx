@@ -35,9 +35,7 @@ export function TransactionSummary({ transactionsByMonth, isLoading }: Transacti
       <Skeleton.Group show={isLoading}>
         <Skeleton width={'100%'} {...theme.defaultStyles.skeleton}>
           <Text style={styles.periodTitle}>
-            {t('transactions.month-summary.title')}
-            {': '}
-            {readablePeriod}
+            {t('transactions.month-summary.title')} {readablePeriod}
           </Text>
         </Skeleton>
         <Skeleton width={'80%'} {...theme.defaultStyles.skeleton}>

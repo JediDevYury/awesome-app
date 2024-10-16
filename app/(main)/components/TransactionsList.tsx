@@ -1,10 +1,9 @@
 import { TransactionListItem } from './TransactionListItem';
 import { Loader } from '@/components/common';
-// import { ErrorNotification, Loader } from '@/components/common';
 import { Transaction, TransactionWithCategory } from '@/types';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, TouchableOpacity, View, Text, RefreshControl } from 'react-native';
+import { FlatList, TouchableOpacity, View, Text, RefreshControl, Platform } from 'react-native';
 import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
 
 type TransactionsListProps = { transactions: TransactionWithCategory[]; isLoading: boolean };
@@ -36,7 +35,6 @@ export function TransactionsList({ transactions, isLoading }: TransactionsListPr
 
   return (
     <>
-      {/*<ErrorNotification errorMessage={errorMessage} />*/}
       <FlatList
         data={transactions}
         keyExtractor={(item: Transaction) => item.id.toString()}
@@ -59,6 +57,7 @@ export function TransactionsList({ transactions, isLoading }: TransactionsListPr
           />
         }
         scrollEventThrottle={16}
+        // TODO: Implement pagination
         // onEndReached={loadMoreTransactions}
         // ListFooterComponent={
         //   <View style={styles.footer(hasNextPage)}>
@@ -82,7 +81,7 @@ const stylesheet = createStyleSheet((theme) => ({
   flatListContainer: {
     paddingHorizontal: theme.spacing.s,
     paddingTop: 10,
-    paddingBottom: 20,
+    paddingBottom: Platform.select({ ios: 20, android: 40 }),
   },
   text: {
     color: theme.colors.typography,

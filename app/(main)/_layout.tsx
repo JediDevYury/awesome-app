@@ -1,31 +1,29 @@
-import { Ionicons } from '@expo/vector-icons';
-import { Link, Stack } from 'expo-router';
-import { TouchableOpacity } from 'react-native';
+import { Stack } from 'expo-router';
 import { useStyles } from 'react-native-unistyles';
 
 const Layout = () => {
   const { theme } = useStyles();
-
   return (
     <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
-        name="(modals)/create-transaction"
+        name="index"
         options={{
-          presentation: 'transparentModal',
-          animation: 'fade',
-          headerTransparent: true,
-          headerTintColor: theme.colors.white,
-          headerTitle: 'Create Transaction',
-          headerLeft: () => (
-            <Link replace href={'/(main)/(tabs)/transactions'} asChild>
-              <TouchableOpacity>
-                <Ionicons name="close-outline" size={24} color={theme.colors.white} />
-              </TouchableOpacity>
-            </Link>
-          ),
+          headerTitle: 'Transactions',
+          headerStyle: {
+            backgroundColor: theme.colors.accent,
+          },
+          headerTitleStyle: {
+            color: theme.colors.white,
+            fontFamily: theme.typography.variant.semiBold,
+            fontSize: theme.typography.size.xl,
+          },
         }}
       />
+      <Stack.Screen
+        name="create-transaction"
+        options={{ headerShown: false, presentation: 'modal' }}
+      />
+      <Stack.Screen name="settings" options={{ headerShown: false }} />
     </Stack>
   );
 };

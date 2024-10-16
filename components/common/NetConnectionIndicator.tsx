@@ -28,8 +28,9 @@ export function NetConnectionIndicator() {
       setIsShown(true);
 
       animatedValue.value = withTiming(0, { duration: 500 });
+
       const timerId = setTimeout(() => {
-        animatedValue.value = withTiming(0, { duration: 500 }, () => {
+        animatedValue.value = withTiming(100, { duration: 500 }, () => {
           runOnJS(setIsShown)(false);
         });
       }, 3000);

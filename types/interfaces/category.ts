@@ -4,7 +4,7 @@ export enum CategoryType {
 }
 
 export interface Category {
-  id: string;
+  id: number;
   name: string;
   type: keyof typeof CategoryType;
 }
