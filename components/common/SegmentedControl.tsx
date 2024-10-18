@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
-import { View, useWindowDimensions, TouchableOpacity, Platform } from 'react-native';
-import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { useWindowDimensions, TouchableOpacity, Platform } from 'react-native';
+import Animated, { FadeIn, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 type SegmentedControlProps = {
@@ -58,9 +58,9 @@ const segmentedOptionStylesheet = createStyleSheet((theme) => ({
 
 export const SegmentedControl = memo(
   ({ options, selectedOption, onOptionPress }: SegmentedControlProps) => {
-    const internalPadding = 20;
+    const internalPadding = 10;
     const { width: windowWidth } = useWindowDimensions();
-    const segmentedControlWidth = windowWidth - 40;
+    const segmentedControlWidth = windowWidth - 80;
     const itemWidth = (segmentedControlWidth - internalPadding) / options.length;
 
     const { styles } = useStyles(stylesheet);
@@ -74,9 +74,11 @@ export const SegmentedControl = memo(
     const handleOptionPress = (option: string) => onOptionPress?.(option);
 
     return (
-      <View
+      <Animated.View
+        entering={FadeIn.springify(1000)}
+        exiting={FadeIn.springify(100)}
         style={styles.container({
-          width: windowWidth - 40,
+          width: windowWidth - 80,
           paddingLeft: internalPadding / 2,
         })}
       >
@@ -95,7 +97,7 @@ export const SegmentedControl = memo(
             onPress={handleOptionPress}
           />
         ))}
-      </View>
+      </Animated.View>
     );
   },
 );

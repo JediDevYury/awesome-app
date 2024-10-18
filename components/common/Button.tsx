@@ -5,6 +5,7 @@ import {
   Pressable,
   PressableProps,
   Text,
+  ViewStyle,
 } from 'react-native';
 import Animated, {
   interpolateColor,
@@ -14,11 +15,13 @@ import Animated, {
 } from 'react-native-reanimated';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-export function Button({
-  text,
-  isLoading,
-  ...props
-}: PressableProps & { text: string; isLoading?: boolean }) {
+type ButtonProps = PressableProps & {
+  text: string;
+  isLoading?: boolean;
+  style?: ViewStyle;
+};
+
+export function Button({ text, isLoading, style, ...props }: PressableProps & ButtonProps) {
   const { styles, theme } = useStyles(stylesheet);
   const animatedValue = useSharedValue(100);
 
@@ -44,7 +47,7 @@ export function Button({
 
   return (
     <Pressable {...props} onPressIn={fadeIn} onPressOut={fadeOut}>
-      <Animated.View style={[styles.container, animatedStyle]}>
+      <Animated.View style={[styles.container, animatedStyle, style]}>
         {!isLoading && (
           <Text style={styles.text} numberOfLines={1} adjustsFontSizeToFit>
             {text}

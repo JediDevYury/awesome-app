@@ -1,12 +1,12 @@
-import { Category } from '@/types';
+import { Category, CategoryType } from '@/types';
 
 export interface Transaction {
   id: number;
   amount: number;
   date: number;
   description: string;
-  category_id: string;
-  type: 'Income' | 'Expense';
+  category_id: number;
+  type: CategoryType;
 }
 
 export interface TransactionWithCategory extends Transaction {

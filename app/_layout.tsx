@@ -9,12 +9,12 @@ import { ErrorNotification, Loader } from '@/components/common';
 import { NetConnectionIndicator } from '@/components/common';
 import { AuthProvider, useAuth } from '@/providers/auth.provider';
 import { queryClient } from '@/services/react-query.service';
+import { handleError } from '@/shared';
 import { authStorage } from '@/storage/auth.storage';
 import { focusManager } from '@tanstack/query-core';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { Slot, useRouter, useSegments } from 'expo-router';
-import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
+import { SQLiteProvider } from 'expo-sqlite';
 import { AppState, AppStateStatus, Platform } from 'react-native';
 
 const fonts = {
@@ -32,8 +32,6 @@ export {
 SplashScreen.preventAutoHideAsync();
 
 export function InitialLayout() {
-  const db = useSQLiteContext();
-  useDrizzleStudio(db);
   const { user, authenticationStatus, signOut, error: authError } = useAuth();
   const router = useRouter();
   const segments = useSegments();
@@ -50,15 +48,19 @@ export function InitialLayout() {
   };
 
   useEffect(() => {
-    const tokens = authStorage.getItem('tokens') || null;
-    const inMainGroup = segments[0] === '(main)';
+    try {
+      const tokens = authStorage.getItem('tokens') || null;
+      const inMainGroup = segments[0] === '(main)';
 
-    if (tokens) {
-      router.replace('/(main)/(tabs)/transactions');
-    }
+      if (tokens) {
+        router.replace('/(main)');
+      }
 
-    if (!tokens && inMainGroup) {
-      router.replace('/(auth)/sign-in');
+      if (!tokens && inMainGroup) {
+        router.replace('/(main)');
+      }
+    } catch (error) {
+      handleError(error);
     }
 
     return () => {
@@ -93,7 +95,11 @@ function RootLayoutNav() {
       <AuthProvider>
         <Suspense fallback={<Loader loading={true} />}>
           <SQLiteProvider
-            databaseName="mySQLiteDB"
+            databaseName={
+              Platform.OS === 'android'
+                ? (process.env.EXPO_PUBLIC_ANDROID_DATABASE_NAME ?? 'mySQLiteDB.db')
+                : (process.env.EXPO_PUBLIC_IOS_DATABASE_NAME ?? 'mySQLiteDB')
+            }
             assetSource={{ assetId: require('../assets/mySQLiteDB.db') }}
             useSuspense
           >

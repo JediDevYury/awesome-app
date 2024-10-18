@@ -46,7 +46,7 @@ export const TransactionListItem = ({ transaction, category }: TransactionListIt
           <Chip
             style={styles.chip}
             label={category.name}
-            color={CategoryColors[category.name ?? 'Default']}
+            backgroundColor={CategoryColors[category.name ?? 'Default']}
             emoji={CategoryEmojies[category.name ?? 'Default']}
           />
         </View>

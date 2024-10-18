@@ -1,21 +1,25 @@
 import { CategoryEmojies } from '@/shared';
-import React from 'react';
 import { Text, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 type ChipProps = {
   label: string;
-  color?: string;
+  backgroundColor?: string;
   emoji?: string;
 };
 
-export const Chip = ({ color, label, style, ...props }: ChipProps & TouchableOpacityProps) => {
+export const Chip = ({
+  backgroundColor,
+  label,
+  style,
+  ...props
+}: ChipProps & TouchableOpacityProps) => {
   const { styles, theme } = useStyles(stylesheet);
 
   return (
     <TouchableOpacity
-      style={[styles.container, { backgroundColor: color }, style]}
+      style={[styles.container, { backgroundColor }, style]}
       activeOpacity={0.7}
       {...props}
     >

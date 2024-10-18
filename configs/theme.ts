@@ -34,6 +34,8 @@ export const colors = {
   black: 'rgb(0, 0, 0)',
   gray: 'rgb(128, 128, 128)',
   green: 'rgb(0, 128, 0)',
+  blur: 'rgba(0, 0, 0, 0.5)',
+  borderTopColor: '#00000010',
 } as const;
 
 export const radius = {
