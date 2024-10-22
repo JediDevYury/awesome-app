@@ -1,3 +1,5 @@
+import type { SelectItem } from '@/types/picker';
+
 export const handleError = (
   err: unknown,
   callback?: (error: Error) => void,
@@ -18,4 +20,17 @@ export const formatDateToTime = (date: Date) => {
   if (minutes < 10) minutes = `0${minutes}`;
 
   return `${hours}:${minutes}`;
+};
+
+export const formatValuesToSelectItems = <V extends string, L extends string>(
+  values: {
+    [key: string]: any;
+  }[],
+  valueAccessor: V,
+  labelAccessor: L,
+): SelectItem[] => {
+  return values.map((value) => ({
+    label: value[labelAccessor],
+    value: value[valueAccessor],
+  }));
 };

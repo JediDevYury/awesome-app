@@ -35,7 +35,8 @@ export const colors = {
   gray: 'rgb(128, 128, 128)',
   green: 'rgb(0, 128, 0)',
   blur: 'rgba(0, 0, 0, 0.5)',
-  borderTopColor: '#00000010',
+  border: 'rgba(0, 0, 0, 0.1)',
+  gray94: 'rgb(240, 240, 240)',
 } as const;
 
 export const radius = {
@@ -55,7 +56,7 @@ export const spacing = {
 export const defaultStyles = {
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     gap: spacing.s,
     backgroundColor: colors.background,
@@ -78,6 +79,7 @@ export const defaultStyles = {
       duration: 2000,
     },
   },
+  listItemWidth: '60%',
 } as const;
 
 export const hiqoTheme = {
