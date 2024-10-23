@@ -1,68 +1,100 @@
 import { Button } from '@/components/common';
-import { MultipleItemPicker, SingleItemPicker } from '@/components/common/Picker';
-import { defaultStyles } from '@/configs/theme';
-import { categories } from '@/mocks/categories';
-import { useAuth } from '@/providers';
-import { formatValuesToSelectItems } from '@/shared';
-import type { SelectItem } from '@/types';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import {
+  PhoneMaskInput,
+  CreditCardMaskInput,
+  CurrencyMaskInput,
+  MaskedDateInput,
+} from '@/components/common/MaskedInput/examples';
+import { InputManagerRef } from '@/components/common/MaskedInput/types';
+import { hiqoTheme } from '@/configs/theme';
+import { useEffect, useRef, useState } from 'react';
+import { TextInput, Keyboard } from 'react-native';
+import {
+  KeyboardAwareScrollView,
+  KeyboardToolbar,
+  KeyboardToolbarProps,
+  DefaultKeyboardToolbarTheme,
+  KeyboardEvents,
+} from 'react-native-keyboard-controller';
 import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
 
+const theme: KeyboardToolbarProps['theme'] = {
+  ...DefaultKeyboardToolbarTheme,
+  dark: {
+    ...DefaultKeyboardToolbarTheme.dark,
+    primary: hiqoTheme.colors.accent,
+  },
+  light: {
+    ...DefaultKeyboardToolbarTheme.light,
+    primary: hiqoTheme.colors.accent,
+  },
+};
+
 export default function Settings() {
-  const { t } = useTranslation();
-  const { styles } = useStyles(stylesheet);
-  const { signOut } = useAuth();
-  const router = useRouter();
-  const [selectedItems, setSelectedItems] = useState<SelectItem[]>([]);
-  const [selectedItem, setSelectedItem] = useState<SelectItem | null>(null);
+  const { styles } = useStyles(settingsStylesheet);
+
+  const inputManagerRef = useRef<InputManagerRef>(null);
+  const [keyboardStatus, setKeyboardStatus] = useState('Default');
 
   const handleSignOut = async () => {
-    await signOut();
-
-    router.replace('/(auth)/sign-in');
+    Keyboard.dismiss();
   };
 
-  const handleMultipleItemPickerChange = (selectItems: SelectItem[]) => {
-    setSelectedItems(selectItems);
-  };
+  useEffect(() => {
+    if (inputManagerRef) {
+      inputManagerRef.current?.focus();
+    }
+  }, []);
 
-  const handlePickerChange = (selectedItem: SelectItem | null) => {
-    setSelectedItem(selectedItem);
-  };
+  useEffect(() => {
+    const showSubscription = KeyboardEvents.addListener('keyboardDidShow', () => {
+      setKeyboardStatus('Keyboard Did Shown');
+    });
+
+    const hideSubscription = KeyboardEvents.addListener('keyboardDidHide', () => {
+      setKeyboardStatus('Keyboard Did Hide');
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <MultipleItemPicker onChange={handleMultipleItemPickerChange} selectedItems={selectedItems}>
-        <MultipleItemPicker.Modal type={'multiple'}>
-          <MultipleItemPicker.List items={formatValuesToSelectItems(categories, 'id', 'name')} />
-        </MultipleItemPicker.Modal>
-        <MultipleItemPicker.Button text={'Select Categories...'} />
-        <MultipleItemPicker.Chips />
-      </MultipleItemPicker>
-      <SingleItemPicker onChange={handlePickerChange} selectedItem={selectedItem}>
-        <SingleItemPicker.Modal type={'single'}>
-          <SingleItemPicker.List items={formatValuesToSelectItems(categories, 'id', 'name')} />
-        </SingleItemPicker.Modal>
-        <SingleItemPicker.Button placeholder={'Select Category...'} />
-      </SingleItemPicker>
-      <Button text={t('components.button.sign-out')} onPress={handleSignOut} />
-    </View>
+    <>
+      <KeyboardAwareScrollView
+        keyboardShouldPersistTaps={'handled'}
+        contentContainerStyle={styles.container}
+        bottomOffset={62}
+      >
+        <TextInput style={styles.label}>{keyboardStatus}</TextInput>
+        <PhoneMaskInput ref={inputManagerRef} />
+        <CreditCardMaskInput />
+        <CurrencyMaskInput />
+        <MaskedDateInput />
+        <Button style={styles.button} text={'Sign Out'} onPress={handleSignOut} />
+      </KeyboardAwareScrollView>
+      <KeyboardToolbar doneText={'OK'} theme={theme} />
+    </>
   );
 }
 
-const stylesheet = createStyleSheet((theme) => ({
+const settingsStylesheet = createStyleSheet((theme) => ({
   container: {
-    ...defaultStyles.container,
+    paddingTop: theme.spacing.m + UnistylesRuntime.insets.top,
     paddingHorizontal: theme.spacing.m,
-    paddingTop: UnistylesRuntime.insets.top,
-    paddingBottom: UnistylesRuntime.insets.bottom,
-    backgroundColor: theme.colors.background,
-    flexWrap: 'wrap',
+    gap: theme.spacing.m,
+  },
+  button: {
+    marginTop: theme.spacing.l,
   },
   text: {
     color: theme.colors.typography,
+  },
+  label: {
+    paddingVertical: theme.spacing.s,
+    fontSize: 16,
+    color: theme.colors.black,
   },
 }));

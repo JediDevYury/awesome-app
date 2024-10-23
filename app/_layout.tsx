@@ -10,12 +10,12 @@ import { NetConnectionIndicator } from '@/components/common';
 import { AuthProvider, useAuth } from '@/providers/auth.provider';
 import { queryClient } from '@/services/react-query.service';
 import { handleError } from '@/shared';
-import { authStorage } from '@/storage/auth.storage';
 import { focusManager } from '@tanstack/query-core';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { Slot, useRouter, useSegments } from 'expo-router';
+import { Slot } from 'expo-router';
 import { SQLiteProvider } from 'expo-sqlite';
 import { AppState, AppStateStatus, Platform } from 'react-native';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 const fonts = {
   'FiraSans-Regular': require('../assets/fonts/FiraSans-Regular.ttf'),
@@ -23,18 +23,14 @@ const fonts = {
   'FiraSans-Bold': require('../assets/fonts/FiraSans-Bold.ttf'),
 };
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
+export { ErrorBoundary } from 'expo-router';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export function InitialLayout() {
   const { user, authenticationStatus, signOut, error: authError } = useAuth();
-  const router = useRouter();
-  const segments = useSegments();
+  // const router = useRouter();
+  // const segments = useSegments();
   const [loaded, fontLoadingError] = useFonts(fonts);
   const hideSplashScreen = loaded && !(authenticationStatus === 'loading');
 
@@ -49,16 +45,15 @@ export function InitialLayout() {
 
   useEffect(() => {
     try {
-      const tokens = authStorage.getItem('tokens') || null;
-      const inMainGroup = segments[0] === '(main)';
-
-      if (tokens) {
-        router.replace('/(main)');
-      }
-
-      if (!tokens && inMainGroup) {
-        router.replace('/(main)');
-      }
+      // const tokens = authStorage.getItem('tokens') || null;
+      // const inMainGroup = segments[0] === '(main)';
+      // if (tokens) {
+      //   router.replace('/(main)');
+      // }
+      //
+      // if (!tokens && inMainGroup) {
+      //   router.replace('/(main)');
+      // }
     } catch (error) {
       handleError(error);
     }
@@ -103,7 +98,9 @@ function RootLayoutNav() {
             assetSource={{ assetId: require('../assets/mySQLiteDB.db') }}
             useSuspense
           >
-            <InitialLayout />
+            <KeyboardProvider>
+              <InitialLayout />
+            </KeyboardProvider>
           </SQLiteProvider>
         </Suspense>
       </AuthProvider>
