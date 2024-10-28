@@ -1,3 +1,4 @@
+import migrations from '@/migrations';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { Suspense, useEffect } from 'react';
@@ -8,14 +9,17 @@ import '@/styles/unistyles';
 import { ErrorNotification, Loader } from '@/components/common';
 import { NetConnectionIndicator } from '@/components/common';
 import { AuthProvider, useAuth } from '@/providers/auth.provider';
+import { DbMigrationRunnerService } from '@/services';
 import { queryClient } from '@/services/react-query.service';
 import { handleError } from '@/shared';
 import { focusManager } from '@tanstack/query-core';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { Slot } from 'expo-router';
-import { SQLiteProvider } from 'expo-sqlite';
+import { Stack } from 'expo-router';
+import { SQLiteDatabase, SQLiteProvider } from 'expo-sqlite';
+import { useTranslation } from 'react-i18next';
 import { AppState, AppStateStatus, Platform } from 'react-native';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
+import { useStyles } from 'react-native-unistyles';
 
 const fonts = {
   'FiraSans-Regular': require('../assets/fonts/FiraSans-Regular.ttf'),
@@ -28,9 +32,9 @@ export { ErrorBoundary } from 'expo-router';
 SplashScreen.preventAutoHideAsync();
 
 export function InitialLayout() {
+  const { t } = useTranslation();
   const { user, authenticationStatus, signOut, error: authError } = useAuth();
-  // const router = useRouter();
-  // const segments = useSegments();
+  const { theme } = useStyles();
   const [loaded, fontLoadingError] = useFonts(fonts);
   const hideSplashScreen = loaded && !(authenticationStatus === 'loading');
 
@@ -46,13 +50,13 @@ export function InitialLayout() {
   useEffect(() => {
     try {
       // const tokens = authStorage.getItem('tokens') || null;
-      // const inMainGroup = segments[0] === '(main)';
+      // const inMainGroup = segments[0] === '(tabs)';
       // if (tokens) {
-      //   router.replace('/(main)');
+      //   router.replace('/(tabs)');
       // }
       //
       // if (!tokens && inMainGroup) {
-      //   router.replace('/(main)');
+      //   router.replace('/(tabs)');
       // }
     } catch (error) {
       handleError(error);
@@ -72,19 +76,61 @@ export function InitialLayout() {
   useEffect(() => {
     const subscription = AppState.addEventListener('change', onAppStateChange);
 
-    return () => subscription.remove();
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   return (
     <>
       <ErrorNotification errorMessage={fontLoadingError?.message || authError?.message} />
-      <Slot />
+      <Stack>
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="onboarding"
+          options={{
+            title: 'Onboarding',
+            headerShown: false,
+            animation: 'fade',
+          }}
+        />
+        <Stack.Screen
+          name="new"
+          options={{
+            presentation: 'modal',
+            animation: 'slide_from_bottom',
+            title: t('transactions.create-transaction'),
+            headerStyle: {
+              backgroundColor: theme.colors.accent,
+            },
+            headerTitleStyle: {
+              color: 'white',
+              fontFamily: theme.typography.variant.semiBold,
+              fontSize: 24,
+            },
+          }}
+        />
+      </Stack>
       <NetConnectionIndicator />
     </>
   );
 }
 
 function RootLayoutNav() {
+  const migrateDbIfNeeded = async (db: SQLiteDatabase) => {
+    try {
+      await new DbMigrationRunnerService(db).apply(migrations);
+      console.log('All migrations applied.');
+    } catch (err) {
+      console.error('Error applying migrations:', err);
+    }
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -95,7 +141,7 @@ function RootLayoutNav() {
                 ? (process.env.EXPO_PUBLIC_ANDROID_DATABASE_NAME ?? 'mySQLiteDB.db')
                 : (process.env.EXPO_PUBLIC_IOS_DATABASE_NAME ?? 'mySQLiteDB')
             }
-            assetSource={{ assetId: require('../assets/mySQLiteDB.db') }}
+            onInit={migrateDbIfNeeded}
             useSuspense
           >
             <KeyboardProvider>

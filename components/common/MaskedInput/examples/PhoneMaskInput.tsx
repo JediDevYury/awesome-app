@@ -13,6 +13,7 @@ export const PhoneMaskInput = forwardRef<InputManagerRef, Props>((props, ref) =>
   const inputRef = useRef<TextInput>(null);
 
   useImperativeHandle(ref, () => {
+    console.log('useImperativeHandle');
     return {
       focus: () => {
         inputRef.current?.focus();

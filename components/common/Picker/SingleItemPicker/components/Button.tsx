@@ -14,7 +14,13 @@ export const Button = ({ placeholder }: MultipleItemPickerButtonProps) => {
 
   return (
     <TouchableOpacity style={styles.pickerButton} onPress={showModal}>
-      <Text style={styles.pickerButtonText}>{text}</Text>
+      <Text
+        style={styles.pickerButtonText({
+          isItemSelected: Boolean(selectedItem),
+        })}
+      >
+        {text}
+      </Text>
       {selectedItem && (
         <TouchableOpacity style={styles.clearButtonInline} onPress={clearSelection}>
           <MaterialIcons name="clear" size={24} color={theme.colors.accent} />
@@ -26,22 +32,25 @@ export const Button = ({ placeholder }: MultipleItemPickerButtonProps) => {
 
 const stylesheet = createStyleSheet((theme) => ({
   pickerButton: {
-    width: '100%',
+    position: 'relative',
+    width: 190,
     padding: theme.spacing.s,
     paddingRight: 50,
-    backgroundColor: theme.colors.gray94,
+    backgroundColor: theme.colors.white,
     borderRadius: 5,
     borderWidth: 1,
     borderColor: theme.colors.accent,
   },
-  pickerButtonText: {
+  pickerButtonText: ({ isItemSelected }: { isItemSelected: boolean }) => ({
+    ...theme.defaultStyles.text,
     fontSize: 16,
-    color: theme.colors.gray,
-  },
+    color: isItemSelected ? theme.colors.black : theme.colors.gray,
+  }),
   clearButtonInline: {
     position: 'absolute',
-    top: 6,
-    right: 2,
+    right: 0,
+    top: '50%',
+    transform: [{ translateY: -4 }],
     borderRadius: 5,
   },
 }));

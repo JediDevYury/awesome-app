@@ -13,7 +13,7 @@ export const useScrollToIndex = (index: number, isModalVisible: boolean) => {
           viewPosition: 0.5,
         });
       }
-    }, 200);
+    }, 500);
   };
 
   useEffect(() => {

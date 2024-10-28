@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 
 // export const fetchCategories = async () => {
 //   try {
-//     const categoriesCollection = collection(db, 'categories');
+//     const categoriesCollection = collection(db, 'category');
 //     const categorySnapshot = await getDocs(categoriesCollection);
 //
 //     return categorySnapshot.docs.map((doc) => {
@@ -15,7 +15,7 @@ import { useQuery } from '@tanstack/react-query';
 //       } as Category;
 //     });
 //   } catch (error) {
-//     console.error('Failed to fetch categories', error);
+//     console.error('Failed to fetch category', error);
 //   }
 // };
 

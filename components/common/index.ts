@@ -10,3 +10,4 @@ export * from './SegmentedControl';
 export * from './Clipboard';
 export * from './LanguageSwitcher';
 export * from './NetConnectionIndicator';
+export * from './Image';

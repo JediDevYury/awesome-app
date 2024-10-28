@@ -1,11 +1,12 @@
 import { CategoryEmojies } from '@/shared';
 import { Text, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
-import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { createStyleSheet, UnistylesTheme, useStyles } from 'react-native-unistyles';
 
 type ChipProps = {
   label: string;
   backgroundColor?: string;
+  textColor?: string;
   emoji?: string;
 };
 
@@ -13,6 +14,7 @@ export const Chip = ({
   backgroundColor,
   label,
   style,
+  textColor,
   ...props
 }: ChipProps & TouchableOpacityProps) => {
   const { styles, theme } = useStyles(stylesheet);
@@ -34,7 +36,7 @@ export const Chip = ({
         numberOfLines={2}
         adjustsFontSizeToFit
         mode={ResizeTextMode.min_font_size}
-        style={styles.text}
+        style={styles.text({ color: textColor || theme.colors.typography, theme })}
       >
         {label}
       </AutoSizeText>
@@ -56,11 +58,11 @@ export const stylesheet = createStyleSheet((theme) => ({
   categoryEmoji: {
     fontSize: theme.typography.size.l,
   },
-  text: {
+  text: ({ color, theme }: { color: string; theme: UnistylesTheme }) => ({
     textAlign: 'center',
     textAlignVertical: 'center',
-    color: theme.colors.typography,
+    color,
     fontFamily: theme.typography.variant.semiBold,
     maxWidth: '80%',
-  },
+  }),
 }));
