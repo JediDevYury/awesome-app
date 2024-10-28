@@ -1,21 +1,20 @@
-import { TransactionSummary } from './components/TransactionSummary';
-import { TransactionsList } from './components/TransactionsList';
 import { ErrorNotification } from '@/components/common';
-import { useTransactions } from '@/hooks/useTransactions';
-import { Ionicons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
-import { View, TouchableOpacity } from 'react-native';
+import { TransactionSummary, TransactionsList } from '@/components/transactions';
+import { useTransactions } from '@/sqlite/transaction';
+import { useSQLiteContext } from 'expo-sqlite';
+import { View } from 'react-native';
 import { createStyleSheet, useStyles, UnistylesRuntime } from 'react-native-unistyles';
 
 export default function Transactions() {
   const { styles } = useStyles(stylesheet);
+  const db = useSQLiteContext();
   const {
     error,
     transactions,
     transactionsByMonth,
     isTransactionsByMonthLoading,
     isTransactionsLoading,
-  } = useTransactions();
+  } = useTransactions(db);
 
   return (
     <>
@@ -26,11 +25,6 @@ export default function Transactions() {
           isLoading={isTransactionsByMonthLoading}
         />
         <TransactionsList transactions={transactions} isLoading={isTransactionsLoading} />
-        <Link href={'/create-transaction'} replace asChild>
-          <TouchableOpacity style={styles.FAB} activeOpacity={0.7}>
-            <Ionicons name="add" size={24} color="white" />
-          </TouchableOpacity>
-        </Link>
       </View>
     </>
   );
@@ -48,8 +42,7 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   FAB: {
     position: 'absolute',
-    right: 40,
-    bottom: 40,
+    bottom: 0,
     width: 40,
     height: 40,
     borderRadius: theme.radius.l,

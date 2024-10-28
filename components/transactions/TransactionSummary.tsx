@@ -61,7 +61,7 @@ export function TransactionSummary({ transactionsByMonth, isLoading }: Transacti
   );
 }
 
-export const stylesheet = createStyleSheet((theme) => ({
+const stylesheet = createStyleSheet((theme) => ({
   container: {
     marginVertical: theme.spacing.s,
     marginHorizontal: theme.spacing.s,

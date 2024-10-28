@@ -22,15 +22,64 @@ export const formatDateToTime = (date: Date) => {
   return `${hours}:${minutes}`;
 };
 
-export const formatValuesToSelectItems = <V extends string, L extends string>(
+type FormatValuesToSelectItems = {
+  items: SelectItem[];
+  map: Map<string, any>;
+};
+
+export const formatValuesToSelectItems = <L extends string>(
   values: {
     [key: string]: any;
   }[],
-  valueAccessor: V,
   labelAccessor: L,
-): SelectItem[] => {
-  return values.map((value) => ({
-    label: value[labelAccessor],
-    value: value[valueAccessor],
-  }));
+) => {
+  const { items, map } = values.reduce(
+    ({ items, map }: FormatValuesToSelectItems, currentValue, currentIndex) => {
+      const label = currentValue[labelAccessor];
+
+      map.set(currentIndex.toString(), currentValue['id']);
+
+      return {
+        items: [
+          ...items,
+          {
+            label,
+            value: currentIndex,
+          },
+        ],
+        map,
+      };
+    },
+    {
+      items: [],
+      map: new Map<string, number>(),
+    },
+  );
+
+  return { items, map };
 };
+
+export const excludeProperties = <O extends Record<string, any>, K extends keyof O>(
+  obj: O,
+  keys: K[],
+) => {
+  const newObj = { ...obj };
+
+  keys.forEach((key) => {
+    delete newObj[key];
+  });
+
+  return newObj;
+};
+
+export function getKeyByValue<K extends string, V extends number>(
+  map: Map<K, V>,
+  targetValue: number,
+): K | null {
+  for (const [key, value] of map.entries()) {
+    if (value === targetValue) {
+      return key;
+    }
+  }
+  return null;
+}

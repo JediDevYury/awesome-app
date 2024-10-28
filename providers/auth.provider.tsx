@@ -70,12 +70,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const signOut = async () => {
     setIsLoading(true);
 
-    const tokens = authStorage.getItem('tokens');
-
-    if (!tokens) return Promise.reject(new Error('No tokens found'));
-
     try {
+      const tokens = authStorage.getItem('tokens');
       await authProvider['signOut'](tokens.accessToken);
+
       setUser(null);
       authStorage.removeItem('tokens');
       queryClient.clear();

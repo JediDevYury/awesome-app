@@ -10,6 +10,7 @@
   "transactions": {
     "no-categories": "No categories found",
     "no-transactions": "No transactions found",
+    "create-transaction": "Create a transaction",
     "month-summary": {
       "title": "Summary for",
       "income": "Income",
@@ -80,6 +81,14 @@
       "string": "E-mail must be a string",
       "required": "This field is required",
       "invalid": "Invalid e-mail format"
+    }
+  },
+  "confirmations": {
+    "delete-transaction": {
+      "title": "Delete transaction",
+      "description": "Are you sure you want to delete this transaction?",
+      "confirm": "Delete",
+      "cancel": "Cancel"
     }
   }
 }

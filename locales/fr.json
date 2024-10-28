@@ -10,6 +10,7 @@
   "transactions": {
     "no-categories": "Aucune catégorie trouvée",
     "no-transactions": "Aucune transaction trouvée",
+    "create-transaction": "Créer une transaction",
     "transaction": {
       "title": "Transaction",
       "amount": "Montant",
@@ -74,6 +75,14 @@
       "string": "L'e-mail doit être une chaîne de caractères",
       "required": "Ce champ est requis",
       "invalid": "Format d'e-mail invalide"
+    }
+  },
+  "confirmations": {
+    "delete-transaction": {
+      "title": "Supprimer la transaction",
+      "description": "Êtes-vous sûr de vouloir supprimer cette transaction ?",
+      "confirm": "Supprimer",
+      "cancel": "Annuler"
     }
   }
 }

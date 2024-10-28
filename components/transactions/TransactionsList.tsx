@@ -1,6 +1,9 @@
 import { TransactionListItem } from './TransactionListItem';
 import { Loader } from '@/components/common';
+import { deleteTransactionConfirmation } from '@/shared';
+import { useDeleteTransaction } from '@/sqlite/transaction';
 import { Transaction, TransactionWithCategory } from '@/types';
+import { useSQLiteContext } from 'expo-sqlite';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, TouchableOpacity, View, Text, RefreshControl, Platform } from 'react-native';
@@ -10,6 +13,8 @@ type TransactionsListProps = { transactions: TransactionWithCategory[]; isLoadin
 
 export function TransactionsList({ transactions, isLoading }: TransactionsListProps) {
   const { t } = useTranslation();
+  const db = useSQLiteContext();
+  const { deleteTransaction } = useDeleteTransaction(db);
   const [refreshing, setRefreshing] = useState(false);
   const { styles, theme } = useStyles(stylesheet);
 
@@ -43,7 +48,22 @@ export function TransactionsList({ transactions, isLoading }: TransactionsListPr
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
           return (
-            <TouchableOpacity activeOpacity={0.7}>
+            <TouchableOpacity
+              onLongPress={async () => {
+                deleteTransactionConfirmation(
+                  async () => {
+                    await deleteTransaction(item.id);
+                  },
+                  {
+                    title: t('confirmations.delete-transaction.title'),
+                    message: t('confirmations.delete-transaction.description'),
+                    confirmText: t('confirmations.delete-transaction.confirm'),
+                    cancelText: t('confirmations.delete-transaction.cancel'),
+                  },
+                );
+              }}
+              activeOpacity={0.7}
+            >
               <TransactionListItem transaction={item} category={item.category} />
             </TouchableOpacity>
           );
@@ -56,7 +76,6 @@ export function TransactionsList({ transactions, isLoading }: TransactionsListPr
             onRefresh={onRefresh}
           />
         }
-        scrollEventThrottle={16}
         // TODO: Implement pagination
         // onEndReached={loadMoreTransactions}
         // ListFooterComponent={

@@ -37,6 +37,9 @@ export const colors = {
   blur: 'rgba(0, 0, 0, 0.5)',
   border: 'rgba(0, 0, 0, 0.1)',
   gray94: 'rgb(240, 240, 240)',
+  colorDarkRed: 'rgba(198, 40, 40, 1)',
+  colorAppleRed: 'rgba(229, 115, 115, 1)',
+  colorLimeRed: 'rgba(255, 138, 128, 1)',
 } as const;
 
 export const radius = {

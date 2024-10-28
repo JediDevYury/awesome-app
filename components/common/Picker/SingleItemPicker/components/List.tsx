@@ -14,10 +14,10 @@ export const List = <T extends SelectItem>({ items }: ListProps<T>) => {
   const { styles, theme } = useStyles(styleSheet);
   const { selectedItem, modalVisible: isModalVisible } = useSingleItemPickerContext();
   const viewableItems = useSharedValue<ViewToken[]>([]);
-  const { flatListRef: ref } = useScrollToIndex(
-    selectedItem ? selectedItem.value - 1 : 0,
-    isModalVisible,
-  );
+
+  const scrollIndex = selectedItem ? selectedItem.value : 0;
+
+  const { flatListRef: ref } = useScrollToIndex(scrollIndex, isModalVisible);
 
   return (
     <FlatList

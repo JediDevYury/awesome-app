@@ -1,21 +1,24 @@
+import { usePlatform } from '@/hooks/usePlatform';
 import { Ionicons } from '@expo/vector-icons';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useEffect, useState } from 'react';
-import { Text, Dimensions, Platform } from 'react-native';
+import { Text, Dimensions } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
   runOnJS,
 } from 'react-native-reanimated';
-import { createStyleSheet, UnistylesRuntime, useStyles } from 'react-native-unistyles';
+import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 export function NetConnectionIndicator() {
   const [isShown, setIsShown] = useState<boolean>(false);
+  const { isAndroid } = usePlatform();
   const { isConnected } = useNetInfo();
+  const translateY = isAndroid ? 60 : 100;
 
   const { styles } = useStyles(stylesheet);
-  const animatedValue = useSharedValue(100);
+  const animatedValue = useSharedValue(translateY);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -30,7 +33,7 @@ export function NetConnectionIndicator() {
       animatedValue.value = withTiming(0, { duration: 500 });
 
       const timerId = setTimeout(() => {
-        animatedValue.value = withTiming(100, { duration: 500 }, () => {
+        animatedValue.value = withTiming(translateY, { duration: 500 }, () => {
           runOnJS(setIsShown)(false);
         });
       }, 3000);
@@ -60,7 +63,7 @@ export function NetConnectionIndicator() {
 const stylesheet = createStyleSheet((theme) => ({
   notification: (isConnected: boolean) => ({
     position: 'absolute',
-    bottom: Platform.select({ ios: 0, android: UnistylesRuntime.insets.bottom }),
+    bottom: 0,
     zIndex: 100,
     width: Dimensions.get('screen').width,
     flexDirection: 'row',
@@ -68,7 +71,7 @@ const stylesheet = createStyleSheet((theme) => ({
     gap: theme.spacing.s,
     justifyContent: 'center',
     padding: theme.spacing.m,
-    height: Platform.select({ ios: 80 }),
+    height: 60,
     backgroundColor: isConnected ? theme.colors.green : theme.colors.accent,
   }),
   text: {

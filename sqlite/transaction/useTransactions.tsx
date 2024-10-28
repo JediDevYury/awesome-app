@@ -1,38 +1,29 @@
+import { useCategories } from '../category/useCategories';
+import { useEffectOnlyOnUpdate } from '@/hooks/useEffectOnlyOnUpdate';
 import { handleError } from '@/shared/helpers';
-import { Category, Transaction, TransactionsByMonth } from '@/types';
+import { useTransactionStore } from '@/store/transactionStore';
+import { Transaction, TransactionsByMonth } from '@/types';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
-import { useSQLiteContext } from 'expo-sqlite';
+import { SQLiteDatabase } from 'expo-sqlite';
 import { useEffect, useMemo, useState } from 'react';
 
 interface IOptions {
-  limit: number;
-  order: 'DESC' | 'ASC';
+  limit?: number;
+  order?: 'DESC' | 'ASC';
 }
 
-export const useTransactions = () => {
-  const db = useSQLiteContext();
+export const useTransactions = (db: SQLiteDatabase) => {
   useDrizzleStudio(db);
   const [error, setError] = useState<Error>();
+  const { isTransactionsUpdated, setTransactionsUpdated } = useTransactionStore();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [isTransactionsLoading, setIsTransactionsLoading] = useState(true);
   const [isTransactionsByMonthLoading, setIsTransactionsByMonthLoading] = useState(true);
   const [transactionsByMonth, setTransactionsByMonth] = useState<TransactionsByMonth>({
     totalIncome: 0,
     totalExpenses: 0,
   });
-
-  const getCategories = async (): Promise<Category[] | void> => {
-    try {
-      const categories = await db.getAllAsync<Category>(`SELECT * FROM Categories;`);
-
-      setCategories(categories);
-
-      return categories;
-    } catch (catchError) {
-      handleError(catchError, setError, 'categories');
-    }
-  };
+  const { categories, getCategories, error: categoriesError } = useCategories(db);
 
   const getTransactionsByMonth = async (): Promise<void> => {
     try {
@@ -56,6 +47,7 @@ export const useTransactions = () => {
     `,
         [startOfMonthTimestamp, endOfMonthTimestamp],
       );
+
       setTransactionsByMonth(transactionsByMonth);
     } catch (catchError) {
       handleError(catchError, setError, 'transactions by month');
@@ -66,7 +58,6 @@ export const useTransactions = () => {
 
   const getTransactions = async (
     options: IOptions = {
-      limit: 25,
       order: 'DESC',
     },
   ): Promise<void> => {
@@ -76,7 +67,7 @@ export const useTransactions = () => {
     const query = `SELECT * FROM Transactions ORDER BY date ${order} LIMIT ?;`;
 
     try {
-      const transactions = await db.getAllAsync<Transaction>(query, [limit]);
+      const transactions = await db.getAllAsync<Transaction>(query, [limit ?? 25]);
 
       setTransactions(transactions);
     } catch (catchError) {
@@ -95,19 +86,36 @@ export const useTransactions = () => {
     });
   }, [transactions, categories, transactionsByMonth]);
 
-  useEffect(() => {
-    db.withExclusiveTransactionAsync(async () => {
+  const fetchTransactions = async () => {
+    await db.withExclusiveTransactionAsync(async () => {
       const categories = await getCategories();
 
       if (!categories) return;
 
-      await Promise.all([getTransactionsByMonth(), getTransactions()]);
+      await Promise.all([
+        getTransactionsByMonth(),
+        getTransactions({
+          order: 'DESC',
+        }),
+      ]);
     });
+  };
+
+  useEffect(() => {
+    fetchTransactions();
   }, []);
+
+  useEffectOnlyOnUpdate(() => {
+    if (!isTransactionsUpdated) return;
+
+    fetchTransactions();
+
+    setTransactionsUpdated();
+  }, [isTransactionsUpdated]);
 
   return {
     db,
-    error,
+    error: categoriesError || error,
     getTransactionsByMonth,
     getTransactions,
     transactions: transactionsWithCategories,
