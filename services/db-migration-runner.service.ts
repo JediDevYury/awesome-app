@@ -10,8 +10,14 @@ export class DbMigrationRunnerService {
         user_version: number;
       }>('PRAGMA user_version;');
 
+      if (!version) {
+        return {
+          userVersion: 0,
+        };
+      }
+
       return {
-        userVersion: version?.user_version ?? 0,
+        userVersion: version?.user_version,
       };
     } catch (error) {
       throw new Error('Error getting user version', { cause: error });
@@ -34,24 +40,19 @@ export class DbMigrationRunnerService {
       return userVersion;
     }
 
-    return migrations.slice(userVersion).reduce(async (versionPromise, migration, index) => {
-      const version = await versionPromise;
+    const needToRunMigrations = migrations.slice(userVersion);
 
+    for (const migration of needToRunMigrations) {
       await this.db.withTransactionAsync(async () => {
         try {
-          console.log(`Applying migration ${migration.name}`);
           await migration.up(this.db);
         } catch (error) {
           throw new Error(`Could not execute migration ${migration.name}`, { cause: error });
         }
       });
+    }
 
-      return version + index + 1;
-    }, Promise.resolve(userVersion));
-  }
-
-  private async resetVersion(): Promise<void> {
-    await this.setVersion(0);
+    return migrations.length;
   }
 
   public async apply(migrations: DatabaseMigration[]): Promise<UserVersion> {

@@ -7,7 +7,6 @@ export const createTransactionSchema = z.object({
     message: 'Amount is required',
   }),
   date: z.date(),
-  time: z.date(),
   description: z.string().min(1, {
     message: 'Description is required',
   }),

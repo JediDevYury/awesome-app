@@ -4,7 +4,6 @@ import { Button, Input, SegmentedControl } from '@/components/common';
 import DatePicker from '@/components/common/DatePicker/DatePicker';
 import CategoriesList from '@/components/transactions/CategoryList';
 import { CreateTransactionSchema, createTransactionSchema } from '@/forms/schemas';
-import { excludeProperties } from '@/shared';
 import { useCreateTransaction } from '@/sqlite/transaction';
 import { useTransactionStore } from '@/store/transactionStore';
 import { CategoryType } from '@/types';
@@ -30,7 +29,6 @@ export default function NewTransaction() {
       type: CategoryType.Expense,
       amount: '',
       date: new Date(),
-      time: new Date(),
       description: '',
       categoryId: 1,
     },
@@ -38,12 +36,7 @@ export default function NewTransaction() {
   });
 
   const onSubmit: SubmitHandler<CreateTransactionSchema> = async (formData) => {
-    const {
-      categoryId: category_id,
-      amount,
-      date,
-      ...rest
-    } = excludeProperties(formData, ['time']);
+    const { categoryId: category_id, amount, date, ...rest } = formData;
 
     await createTransaction({
       ...rest,
